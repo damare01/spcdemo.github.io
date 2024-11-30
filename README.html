@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Event Attendance Management System">
+  <title>Attendance Web Application</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.8;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+      color: #333;
+    }
+    h1, h2 {
+      color: #2c3e50;
+    }
+    h1 {
+      font-size: 36px;
+      margin-top: 40px;
+    }
+    h2 {
+      font-size: 28px;
+      margin-top: 30px;
+    }
+    h3 {
+      font-size: 24px;
+      margin-top: 20px;
+    }
+    p {
+      margin: 16px 0;
+      font-size: 16px;
+    }
+    ul {
+      padding-left: 20px;
+      list-style-type: disc;
+    }
+    ul li {
+      margin-bottom: 10px;
+    }
+    .container {
+      max-width: 1000px;
+      margin: 20px auto;
+      padding: 20px;
+      background-color: #fff;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+    }
+    .note {
+      margin: 20px 0;
+      padding: 15px;
+      border-left: 4px solid #333;
+      background-color: #f0f0f0;
+      font-style: italic;
+    }
+    .footer {
+      margin-top: 40px;
+      text-align: center;
+      font-size: 14px;
+      color: #555;
+    }
+    table {
+      width: 100%;
+      margin-top: 20px;
+      border-collapse: collapse;
+    }
+    table th, table td {
+      padding: 10px;
+      text-align: left;
+      border: 1px solid #ddd;
+    }
+    table th {
+      background-color: #f8f8f8;
+    }
+    pre {
+      background-color: #f4f4f4;
+      padding: 10px;
+      border-radius: 5px;
+      font-family: monospace;
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Attendance Web Application 📅</h1>
+
+    <p>An event attendance management system designed to manage and track attendance for events hosted by an institution. The system allows users to register their attendance for events and records their program details along with their attendance status.</p>
+
+    <h2>Table of Contents 📚</h2>
+    <ul>
+      <li><a href="#features">Features</a></li>
+      <li><a href="#technologies-used">Technologies Used</a></li>
+      <li><a href="#key-configurations">Key Configurations</a></li>
+      <li><a href="#setup-instructions">Setup Instructions</a></li>
+      <li><a href="#future-enhancements">Future Enhancements</a></li>
+    </ul>
+
+    <h2 id="features">Features 🌟</h2>
+    <h3>1. User Registration for Attendance</h3>
+    <p>Users can register their attendance for events by filling out a form with the following details:</p>
+    <ul>
+      <li><strong>Full Name</strong>: The user's full name.</li>
+      <li><strong>Email Address</strong>: The user's email address for event communication.</li>
+      <li><strong>Year Level</strong>: The user's year level or academic standing.</li>
+      <li><strong>Program</strong>: The user's academic program (e.g., Bachelor of Science in Nursing or others).</li>
+    </ul>
+
+    <h3>2. Dynamic Program List</h3>
+    <p>The program list is dynamically populated from a Google Spreadsheet, ensuring that any changes to the list of available programs are automatically reflected in the form. Users select their program from this list to register.</p>
+
+    <h3>3. Form Submission and Data Recording</h3>
+    <p>Upon form submission, the system records the user's attendance details in a <strong>Google Sheet</strong> under the appropriate program and year combination. The system ensures that the user’s data is accurately added, including the program and year. The "Proof Link" for attendance remains marked as "Pending" until further updates (such as proof submission) are integrated.</p>
+
+    <h3>4. Automated Email Confirmation</h3>
+    <p>Upon successful form submission, the user receives an automated confirmation email. The email includes:</p>
+    <ul>
+      <li>Event name</li>
+      <li>User’s program and year level</li>
+      <li>A thank-you note acknowledging their participation in the event</li>
+    </ul>
+    <p>This email serves as a formal acknowledgment of their attendance.</p>
+
+    <h3>5. Conditional Form Responses Based on `Attendance Open` Setting</h3>
+    <p>The system checks if event attendance is open or closed. This is controlled by the <code>Attendance Open</code> setting in the Google Sheet under the <code>settings</code> tab:</p>
+    <ul>
+      <li><strong>`Attendance Open: Yes/yes`</strong>: Attendance form is open, users can submit their details.</li>
+      <li><strong>`Attendance Open: No/no`</strong>: Form is closed, users are notified that registration is no longer available.</li>
+    </ul>
+
+    <h3>6. Program-Specific Attendance Sheets</h3>
+    <p>For each program and year combination, a new sheet is created in the Google Spreadsheet to store attendance records. Attendance sheets include columns for:</p>
+    <ul>
+      <li>Timestamp</li>
+      <li>User’s Name</li>
+      <li>User’s Email</li>
+      <li>Program</li>
+      <li>Year Level</li>
+    </ul>
+
+    <h3>7. Program Sheet with Full Program Name and Abbreviation</h3>
+    <p>The <strong>Program Sheet</strong> contains two columns:</p>
+    <ul>
+      <li><strong>Program</strong>: Full program name (e.g., Bachelor of Science in Nursing).</li>
+      <li><strong>Abbreviation</strong>: Shortened version of the program name (e.g., BSN).</li>
+    </ul>
+    <p>This sheet is used to dynamically populate the list of available programs in the attendance registration form.</p>
+
+    <h2 id="technologies-used">Technologies Used 🛠️</h2>
+    <ul>
+      <li><strong>Google Apps Script</strong>: Handles backend logic, form processing, and communication with Google Sheets for data storage and retrieval.</li>
+      <li><strong>Google Sheets</strong>: Stores event-related data, including user attendance and program details.</li>
+      <li><strong>MailApp (Google Apps Script)</strong>: Sends automated email confirmations to users after successful form submissions.</li>
+      <li><strong>HTML/CSS</strong>: Frontend form that users interact with to register their attendance.</li>
+    </ul>
+
+    <h2 id="key-configurations">Key Configurations ⚙️</h2>
+
+    <h3>Attendance Open Setting</h3>
+    <p>The <code>attendanceOpen</code> setting is controlled in the <code>settings</code> sheet of the Google Spreadsheet. This setting is crucial for managing when users can submit their attendance. The following values can be configured:</p>
+    <ul>
+      <li><strong>`Yes/yes`</strong>: Users can submit their attendance.</li>
+      <li><strong>`No/no`</strong>: Users will be informed that registration is closed.</li>
+    </ul>
+
+    <h3>Example of Settings Sheet:</h3>
+    <table>
+      <tr>
+        <th>Setting</th>
+        <th>Value</th>
+      </tr>
+      <tr>
+        <td><code>Event Name</code></td>
+        <td>Event Name Here</td>
+      </tr>
+      <tr>
+        <td><code>Attendance Open</code></td>
+        <td>Yes/No or yes/no</td>
+      </tr>
+    </table>
+
+    <h3>Example of Program Sheet:</h3>
+    <table>
+      <tr>
+        <th>Program</th>
+        <th>Abbreviation</th>
+      </tr>
+      <tr>
+        <td>Bachelor of Science in Nursing</td>
+        <td>BSN</td>
+      </tr>
+      <tr>
+        <td>Bachelor of Arts in Psychology</td>
+        <td>BAP</td>
+      </tr>
+      <tr>
+        <td>Master of Business Administration</td>
+        <td>MBA</td>
+      </tr>
+    </table>
+
+    <h2 id="setup-instructions">Setup Instructions ⚡</h2>
+
+    <h3>Step 1: Create a Google Sheet</h3>
+    <p>Open Google Sheets and create a new spreadsheet.</p>
+
+    <h3>Step 2: Open the Apps Script Editor</h3>
+    <p>In the menu bar, click <strong>Extensions > Apps Script</strong>.</p>
+
+    <h3>Step 3: Add the Code.gs Script</h3>
+    <p>1. In the Apps Script editor, ensure you are on the <code>Code.gs</code> file.</p>
+    <p>2. Paste the provided <code>Code.gs</code> script into the editor.</p>
+
+    <h3>Step 4: Add the HTML File</h3>
+    <p>1. Click the <strong>+</strong> button next to the <strong>Files</strong> tab and select <strong>HTML file</strong>.</p>
+    <p>2. Name the file <code>Index</code> and paste the provided HTML code into the file.</p>
+
+    <h3>Step 5: Deploy the Web App</h3>
+    <p>1. Click <strong>Deploy > New deployment</strong>.</p>
+    <p>2. Set the following:</p>
+    <ul>
+      <li><strong>Type</strong>: Web app.</li>
+      <li><strong>Execute as</strong>: Me.</li>
+      <li><strong>Who has access</strong>: Anyone.</li>
+    </ul>
+    <p>3. Click <strong>Deploy</strong>.</p>
+
+    <h3>Step 6: Authorize the Script</h3>
+    <p>Review the permissions requested and click <strong>Authorize</strong>. Follow the instructions to grant access.</p>
+
+    <h3>Step 7: Access the Web App</h3>
+    <p>After deployment, copy the provided URL to share and access your app.</p>
+
+    <div class="note">
+      <strong>Note:</strong>
+      <p>If you are using an institutional email, you might encounter authorization restrictions. Use a personal Google account to complete the setup.</p>
+    </div>
+
+    <h2 id="future-enhancements">Future Enhancements 🚀</h2>
+    <p>Future development will include additional features like:</p>
+    <ul>
+      <li>File upload for attendance proof.</li>
+      <li>Better handling of event-specific data.</li>
+      <li>Enhanced user interfaces for managing event details.</li>
+    </ul>
+
+    <div class="footer">
+      <p>License: MIT License - see the <a href="LICENSE">LICENSE</a> file for details.</p>
+    </div>
+  </div>
+</body>
+</html>
