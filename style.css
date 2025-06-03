@@ -182,7 +182,6 @@ body {
 .input-group {
   margin-bottom: 1.1rem;
 }
-
 .input-label {
   display: flex;
   align-items: center;
@@ -191,26 +190,20 @@ body {
   color: #222;
   gap: 0.3rem;
 }
-
 .required-indicator {
   color: #c81d25;
   font-size: 1.1em;
   margin-left: 0.1em;
 }
-
-/* Wrap input and icons together */
 .input-wrapper {
   position: relative;
   width: 100%;
   display: flex;
   align-items: center;
 }
-
-/* Place inputs/selects always INSIDE .input-wrapper! */
-
 .input-field {
   width: 100%;
-  padding: 0.65rem 2.2rem 0.65rem 0.85rem; /* space for icon(s) */
+  padding: 0.65rem 2.2rem 0.65rem 0.85rem;
   border: 1.5px solid #e9e9e9;
   border-radius: 0.5rem;
   font-size: 1rem;
@@ -219,22 +212,19 @@ body {
   outline: none;
   box-sizing: border-box;
 }
-
 .input-field:focus {
   border: 1.5px solid #c81d25;
   background: #fff;
 }
-
 .input-field.invalid {
   border: 1.5px solid #e53935;
   background: #fff0f1;
 }
-
 .input-with-icon {
   padding-right: 2.5rem;
 }
 
-/* Fix: Place icons absolutely inside .input-wrapper, not .input-group */
+/* Place all icons absolutely inside .input-wrapper */
 .input-wrapper .input-icon,
 .input-wrapper .select-arrow {
   position: absolute;
@@ -245,30 +235,26 @@ body {
   height: 1.25rem;
   display: block;
   line-height: 1;
-}
-
-/* If both icons, input-icon left of select-arrow. If only input-icon, right: 0.75rem */
-.input-wrapper .input-icon {
-  right: 2.1rem;
-  color: #bdbdbd;
-  z-index: 2;
-}
-.input-wrapper .select-arrow {
-  right: 0.75rem;
-  color: #c81d25;
-  z-index: 3;
-}
-/* Only input-icon, no select-arrow */
-.input-wrapper:not(:has(.select-arrow)) .input-icon {
   right: 0.75rem;
 }
 
-/* Container for select and its icons */
-.select-wrapper {
-  width: 100%;
-  position: relative;
-  display: flex;
-  align-items: center;
+/* Show only the dropdown arrow for selects, hide the other icon */
+.input-wrapper select + .input-icon {
+  display: none;
+}
+.input-wrapper select + .input-icon + .select-arrow {
+  display: block;
+}
+
+/* Hide select-arrow for inputs (non-selects) */
+.input-wrapper input + .input-icon + .select-arrow,
+.input-wrapper textarea + .input-icon + .select-arrow {
+  display: none;
+}
+
+/* Always show input-icon for input fields (not selects) */
+.input-wrapper input + .input-icon {
+  display: block;
 }
 
 /* Responsive fix: stack icons correctly on small screens */
@@ -283,6 +269,7 @@ body {
     height: 1.1rem;
   }
 }
+
 /* ===== Tooltip ===== */
 .tooltip {
   display: inline-block;
