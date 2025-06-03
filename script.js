@@ -171,24 +171,6 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!validatePage(2)) return;
         form.classList.add('hidden');
         successMsg.classList.remove('hidden');
-        triggerConfetti();
+        // Confetti removed!
     });
-
-    // Confetti animation
-    function triggerConfetti() {
-        const confettiContainer = document.getElementById('confettiContainer');
-        confettiContainer.innerHTML = '';
-        confettiContainer.classList.add('show');
-        const colors = ['#c81d25', '#f44336', '#43a047', '#ffd600', '#1565c0'];
-        for (let i = 0; i < 40; i++) {
-            let confetti = document.createElement('div');
-            confetti.className = 'confetti';
-            confetti.style.left = Math.random() * 100 + 'vw';
-            confetti.style.animationDelay = (Math.random() * 1.5) + 's';
-            confetti.style.color = colors[Math.floor(Math.random() * colors.length)];
-            confetti.textContent = '🎉';
-            confettiContainer.appendChild(confetti);
-        }
-        setTimeout(() => confettiContainer.classList.remove('show'), 3200);
-    }
 });
