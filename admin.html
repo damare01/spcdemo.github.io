@@ -1,15 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Admin - College Red Cross Youth Attendance</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="style.css">
-  <!-- Firebase -->
+  <meta charset="UTF-8" />
+  <title>Admin Panel - College Red Cross Youth Attendance</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="stylesheet" href="style.css" />
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
-    import { getDatabase } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-database.js";
-    window.firebaseConfig = {
+    import { getDatabase, ref, onValue, set, push, remove, update, get } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-database.js";
+
+    // Firebase config - same as your main index.html
+    const firebaseConfig = {
       apiKey: "AIzaSyAlZLthDWmMioKQkznMKSOVQ7ggq8HYFfw",
       authDomain: "school-projects-c1354.firebaseapp.com",
       databaseURL: "https://school-projects-c1354-default-rtdb.firebaseio.com",
@@ -19,120 +20,269 @@
       appId: "1:965342267950:web:62527018cd97e4c5266dbf",
       measurementId: "G-7DQ3Q87FD0"
     };
-    window.firebaseApp = initializeApp(window.firebaseConfig);
-    window.getDatabase = getDatabase;
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    // DOM references
+    const eventsList = document.getElementById('eventsList');
+    const eventTitleInput = document.getElementById('eventTitleInput');
+    const addEventBtn = document.getElementById('addEventBtn');
+    const exportBtn = document.getElementById('exportBtn');
+    const filterInput = document.getElementById('filterInput');
+    const entriesTable = document.getElementById('entriesTable');
+    const entriesTbody = document.getElementById('entriesTbody');
+    let selectedEventId = null;
+    let allEvents = {};
+    let allEntries = {};
+
+    // Utils
+    function renderEventsList() {
+      eventsList.innerHTML = "";
+      Object.entries(allEvents).forEach(([eventId, event]) => {
+        const li = document.createElement('li');
+        li.className = 'event-item' + (eventId === selectedEventId ? ' selected' : '');
+        li.innerHTML = `
+          <span class="event-title">${event.title || '[No Title]'}</span>
+          <span class="event-status ${event.status === 'open' ? 'open' : 'closed'}">${event.status === 'open' ? 'Open' : 'Closed'}</span>
+          <button class="toggle-status-btn">${event.status === 'open' ? 'Close' : 'Open'}</button>
+          <button class="edit-event-btn">✏️</button>
+          <button class="delete-event-btn">🗑️</button>
+        `;
+        // Select event on click (not on button click)
+        li.addEventListener('click', (e) => {
+          if (!['BUTTON', 'svg', 'path'].includes(e.target.tagName)) {
+            selectEvent(eventId);
+          }
+        });
+        // Toggle event status
+        li.querySelector('.toggle-status-btn').addEventListener('click', (e) => {
+          e.stopPropagation();
+          const newStatus = (event.status === 'open' ? 'closed' : 'open');
+          update(ref(db, `events/${eventId}`), { status: newStatus });
+        });
+        // Edit event
+        li.querySelector('.edit-event-btn').addEventListener('click', (e) => {
+          e.stopPropagation();
+          const newTitle = prompt("Edit event title:", event.title || "");
+          if (newTitle !== null && newTitle.trim()) {
+            update(ref(db, `events/${eventId}`), { title: newTitle.trim() });
+          }
+        });
+        // Delete event
+        li.querySelector('.delete-event-btn').addEventListener('click', async (e) => {
+          e.stopPropagation();
+          if (confirm("Delete this event and all its attendance entries?")) {
+            await remove(ref(db, `events/${eventId}`));
+            await remove(ref(db, `attendance/${eventId}`));
+            if (selectedEventId === eventId) selectEvent(null);
+          }
+        });
+        eventsList.appendChild(li);
+      });
+    }
+
+    function selectEvent(eventId) {
+      selectedEventId = eventId;
+      renderEventsList();
+      loadEntries();
+      document.getElementById('currentEventTitle').textContent =
+        eventId && allEvents[eventId] ? allEvents[eventId].title : 'No Event Selected';
+      exportBtn.style.display = selectedEventId ? 'inline-block' : 'none';
+    }
+
+    // Add new event
+    addEventBtn.addEventListener('click', async () => {
+      const title = eventTitleInput.value.trim();
+      if (!title) return alert("Please enter an event title.");
+      const eventRef = push(ref(db, 'events'));
+      await set(eventRef, {
+        title: title,
+        status: 'open',
+        createdAt: new Date().toISOString()
+      });
+      eventTitleInput.value = '';
+      selectEvent(eventRef.key);
+    });
+
+    // Listen for events
+    onValue(ref(db, 'events'), (snapshot) => {
+      allEvents = snapshot.val() || {};
+      renderEventsList();
+      // If no event selected, pick the latest one (by createdAt)
+      if (!selectedEventId && Object.keys(allEvents).length) {
+        const latest = Object.entries(allEvents)
+          .sort((a, b) => (b[1].createdAt || '').localeCompare(a[1].createdAt || ''))[0][0];
+        selectEvent(latest);
+      }
+      // update index.html event title via localStorage
+      if (Object.keys(allEvents).length) {
+        const latestEvent = Object.entries(allEvents)
+          .sort((a, b) => (b[1].createdAt || '').localeCompare(a[1].createdAt || ''))[0][1];
+        localStorage.setItem('latestEventTitle', latestEvent.title || '');
+      }
+    });
+
+    // Load attendance entries for selected event
+    function loadEntries() {
+      if (!selectedEventId) {
+        entriesTbody.innerHTML = "";
+        allEntries = {};
+        return;
+      }
+      onValue(ref(db, `attendance/${selectedEventId}`), (snapshot) => {
+        allEntries = snapshot.val() || {};
+        renderEntries();
+      });
+    }
+
+    // Render attendance entries table
+    function renderEntries(filter = "") {
+      entriesTbody.innerHTML = "";
+      let filtered = Object.entries(allEntries);
+      if (filter) {
+        const f = filter.toLowerCase();
+        filtered = filtered.filter(([k, entry]) =>
+          Object.values(entry).join(" ").toLowerCase().includes(f)
+        );
+      }
+      filtered.forEach(([entryId, entry]) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${entry.name}</td>
+          <td>${entry.email}</td>
+          <td>${entry.department}</td>
+          <td>${entry.yearLevel}</td>
+          <td>${entry.section}</td>
+          <td>${entry.strand || ''}</td>
+          <td>${entry.program || ''}</td>
+          <td>${entry.timestamp ? new Date(entry.timestamp).toLocaleString() : ''}</td>
+          <td>
+            <button class="edit-entry-btn">✏️</button>
+            <button class="delete-entry-btn">🗑️</button>
+          </td>
+        `;
+        // Edit
+        tr.querySelector('.edit-entry-btn').addEventListener('click', () => {
+          const newName = prompt("Edit name:", entry.name);
+          if (newName !== null && newName.trim()) {
+            update(ref(db, `attendance/${selectedEventId}/${entryId}`), { name: newName.trim() });
+          }
+        });
+        // Delete
+        tr.querySelector('.delete-entry-btn').addEventListener('click', async () => {
+          if (confirm("Delete this entry?")) {
+            await remove(ref(db, `attendance/${selectedEventId}/${entryId}`));
+          }
+        });
+        entriesTbody.appendChild(tr);
+      });
+    }
+
+    // Filter
+    filterInput.addEventListener('input', () => {
+      renderEntries(filterInput.value);
+    });
+
+    // Export
+    exportBtn.addEventListener('click', () => {
+      const rows = [["Name", "Email", "Department", "Year Level", "Section", "Strand", "Program", "Timestamp"]];
+      Object.values(allEntries).forEach(entry => {
+        rows.push([
+          entry.name, entry.email, entry.department, entry.yearLevel,
+          entry.section, entry.strand || '', entry.program || '', entry.timestamp || ''
+        ]);
+      });
+      // CSV download
+      const csv = rows.map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(",")).join("\n");
+      const blob = new Blob([csv], { type: "text/csv" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = (allEvents[selectedEventId]?.title || "attendance") + ".csv";
+      a.click();
+      setTimeout(() => URL.revokeObjectURL(url), 2000);
+    });
+
+    // Add entry manually
+    document.getElementById('addEntryBtn').addEventListener('click', async () => {
+      if (!selectedEventId) return alert("Please select an event.");
+      const name = prompt("Name:");
+      if (!name || !name.trim()) return;
+      const email = prompt("Email:");
+      if (!email || !email.trim()) return;
+      // For brevity, fill other fields with empty/defaults; could expand to a modal or form
+      await push(ref(db, `attendance/${selectedEventId}`), {
+        name: name.trim(),
+        email: email.trim(),
+        department: "",
+        yearLevel: "",
+        section: "",
+        strand: "",
+        program: "",
+        timestamp: new Date().toISOString()
+      });
+    });
+
+    // Initial UI state
+    exportBtn.style.display = 'none';
+    document.getElementById('currentEventTitle').textContent = 'No Event Selected';
   </script>
   <style>
-    /* Minimal admin page overrides */
-    .admin-container { max-width: 62rem; margin: 2rem auto; background: #fff; border-radius: 1.2rem; box-shadow: 0 4px 24px #0001; padding: 2.5rem; }
-    .admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
-    .admin-title { font-size: 2.1rem; color: #c81d25; font-weight: bold; letter-spacing: -1px; }
-    .admin-event-select { font-size: 1.1rem; border-radius: .4em; border: 1.5px solid #c81d25; padding: .4em 1em; margin-left: 1em; }
-    .admin-table { width: 100%; border-collapse: collapse; margin-top: 1.5rem; }
-    .admin-table th, .admin-table td { padding: .67em .9em; border-bottom: 1px solid #eee; }
-    .admin-table th { background: #fafafa; color: #c81d25; font-weight: 700; }
-    .admin-table td { font-size: 0.99rem; }
-    .admin-actions button { margin-right: 0.6em; }
-    .admin-filter { margin: 1em 0; }
-    .admin-btn { background: #c81d25; color: #fff; border: none; padding: 0.45em 1.1em; border-radius: 0.33em; font-weight: 600; cursor: pointer; margin-right: .5em; }
-    .admin-btn.secondary { background: #f4f4f4; color: #c81d25; border: 1.5px solid #c81d25; }
-    .admin-btn.danger { background: #e53935; }
-    .admin-btn:disabled { opacity: 0.6; cursor: not-allowed; }
-    .admin-table input, .admin-table select { font-size: 0.98em; padding: 0.2em 0.5em; }
-    .admin-export { margin-left: auto; }
+    body { background: #f3f4f6; font-family: 'Segoe UI', Arial, sans-serif; }
+    .admin-panel { max-width: 1200px; margin: 2rem auto; background: #fff; border-radius: 1.5rem; padding: 2rem; box-shadow: 0 4px 24px 0 #0002; }
+    .admin-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 2rem; }
+    .event-actions { display: flex; gap: 1rem; }
+    .event-list { list-style: none; padding: 0; margin: 0 0 2rem 0; }
+    .event-item { display: flex; align-items: center; gap: .8rem; padding: .5rem 1rem; border-radius: .6rem; background: #f7f9fa; margin-bottom: .3rem; cursor: pointer; }
+    .event-item.selected { background: #e3f2fd; font-weight: bold; }
+    .event-title { flex: 1; }
+    .event-status.open { color: #43a047; font-weight: bold; }
+    .event-status.closed { color: #e53935; font-weight: bold; }
+    .event-item button { border: none; background: none; cursor: pointer; font-size: 1.1em; }
+    .admin-tools { display: flex; align-items: center; gap: 1.2rem; margin-bottom: 1.5rem; }
+    .admin-tools input[type="text"] { padding: .5rem 1rem; border: 1.5px solid #ccc; border-radius: .5rem; font-size: 1rem;}
+    .admin-tools button { padding: .5rem 1.2rem; border: none; border-radius: .5rem; background: #1565c0; color: #fff; font-weight: bold; cursor: pointer; }
+    .admin-tools button:hover { background: #0d47a1; }
+    .entries-table { width: 100%; border-collapse: collapse; background: #fafbfc; }
+    .entries-table th, .entries-table td { padding: .7rem 1rem; border-bottom: 1px solid #e3e3e3;}
+    .entries-table th { background: #e3f2fd; }
+    .entries-table td:last-child { text-align: center; }
+    .entries-table button { background: none; border: none; cursor: pointer; font-size: 1.1em;}
     @media (max-width: 900px) {
-      .admin-container { padding: 1rem; }
-      .admin-header { flex-direction: column; align-items: flex-start; }
-      .admin-title { font-size: 1.2rem; }
-      .admin-export { margin: 1em 0 0 0; }
-      .admin-filter { flex-direction: column; }
+      .admin-panel { padding: 1rem; }
+      .admin-header { flex-direction: column; gap: 1rem; }
+      .admin-tools { flex-direction: column; align-items: stretch; gap: .5rem;}
+      .entries-table th, .entries-table td { padding: .5rem .5rem;}
     }
   </style>
 </head>
 <body>
-  <div class="admin-container">
+  <div class="admin-panel">
     <div class="admin-header">
-      <div>
-        <span class="admin-title">Attendance Admin Panel</span>
-        <select id="eventSelect" class="admin-event-select"></select>
-        <button class="admin-btn" id="addEventBtn">+ Add Event</button>
+      <h1>Admin Panel - Attendance Events</h1>
+      <div class="event-actions">
+        <input type="text" id="eventTitleInput" placeholder="New Event Title" />
+        <button id="addEventBtn">Add Event</button>
       </div>
-      <button class="admin-btn admin-export" id="exportBtn">Export CSV</button>
     </div>
-    <div class="admin-filter">
-      <label>
-        Filter by Name: <input type="text" id="filterName" placeholder="Type a name...">
-      </label>
-      <label style="margin-left:1em;">
-        Department:
-        <select id="filterDept">
-          <option value="">All</option>
-          <option value="SHS">SHS</option>
-          <option value="College">College</option>
-        </select>
-      </label>
+    <ul id="eventsList" class="event-list"></ul>
+    <div class="admin-tools">
+      <span><b>Current Event:</b> <span id="currentEventTitle"></span></span>
+      <button id="addEntryBtn">Add Entry</button>
+      <input type="text" id="filterInput" placeholder="Filter entries..." />
+      <button id="exportBtn">Export CSV</button>
     </div>
-    <div id="adminTableContainer">
-      <table class="admin-table" id="attendanceTable">
+    <div style="overflow-x:auto">
+      <table class="entries-table" id="entriesTable">
         <thead>
           <tr>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Dept</th>
-            <th>Year</th>
-            <th>Section</th>
-            <th>Strand</th>
-            <th>Program</th>
-            <th>Proof</th>
-            <th>Actions</th>
+            <th>Name</th><th>Email</th><th>Department</th><th>Year Level</th>
+            <th>Section</th><th>Strand</th><th>Program</th><th>Timestamp</th><th>Actions</th>
           </tr>
         </thead>
-        <tbody id="attendanceTableBody"></tbody>
+        <tbody id="entriesTbody"></tbody>
       </table>
-      <div id="noDataMsg" style="display:none; text-align:center; color:#888; margin-top:2em;">No attendance data.</div>
-    </div>
-    <!-- Modal for Add/Edit Entry -->
-    <div id="modalBG" style="display:none; position:fixed; left:0; top:0; width:100vw; height:100vh; background:#0005; z-index:100;">
-      <div id="modalBox" style="background:#fff; max-width:430px; margin:7vh auto 0 auto; border-radius:1em; box-shadow:0 4px 24px #0002; padding:2em 1.3em; position:relative;">
-        <h3 id="modalTitle" style="color:#c81d25; margin-bottom:1.1em;"></h3>
-        <form id="entryForm">
-          <input type="hidden" id="entryId">
-          <label>Full Name<span style="color:#c81d25;">*</span><input id="entryName" required></label><br>
-          <label>Email<span style="color:#c81d25;">*</span><input id="entryEmail" type="email" required></label><br>
-          <label>Department<span style="color:#c81d25;">*</span>
-            <select id="entryDept" required>
-              <option value="SHS">SHS</option>
-              <option value="College">College</option>
-            </select>
-          </label><br>
-          <label>Year Level<span style="color:#c81d25;">*</span><input id="entryYear" required></label><br>
-          <label>Section<span style="color:#c81d25;">*</span><input id="entrySection" required></label><br>
-          <label>Strand<input id="entryStrand"></label><br>
-          <label>Program<input id="entryProgram"></label><br>
-          <label>Proof URL<input id="entryProof"></label><br>
-          <div style="margin-top:1.2em; text-align:right;">
-            <button type="button" class="admin-btn secondary" id="modalCancel">Cancel</button>
-            <button type="submit" class="admin-btn" id="modalSave">Save</button>
-          </div>
-        </form>
-      </div>
-    </div>
-    <!-- Modal for Add Event -->
-    <div id="eventModalBG" style="display:none; position:fixed; left:0; top:0; width:100vw; height:100vh; background:#0005; z-index:100;">
-      <div style="background:#fff; max-width:350px; margin:12vh auto 0 auto; border-radius:1em; box-shadow:0 4px 24px #0002; padding:2em 1.3em; position:relative;">
-        <h3 style="color:#c81d25; margin-bottom:1em;">Add New Event</h3>
-        <form id="eventForm">
-          <label>Event Name<span style="color:#c81d25;">*</span>
-            <input id="eventName" required style="width:100%;">
-          </label>
-          <div style="margin-top:1.3em; text-align:right;">
-            <button type="button" class="admin-btn secondary" id="eventCancel">Cancel</button>
-            <button type="submit" class="admin-btn">Add Event</button>
-          </div>
-        </form>
-      </div>
     </div>
   </div>
-  <script type="module" src="admin.js"></script>
 </body>
 </html>

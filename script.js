@@ -30,6 +30,18 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('toPage1Prev').addEventListener('click', prevPage);
     document.getElementById('toPage2Prev').addEventListener('click', prevPage);
 
+
+// Fetch latest event title from localStorage and update the UI
+    const eventTitle = localStorage.getItem('latestEventTitle');
+    if (eventTitle) {
+        const header = document.querySelector('.header-section .text-xl.opacity-90.font-light');
+        if (header) {
+            header.innerHTML = `Attendance Registration Form<br><small style="color:#fff;text-shadow:0 1px 2px #c81d25a0"><b>Event:</b> ${eventTitle}</small>`;
+        }
+    }
+
+
+
     // Dynamic Year Level Options
     const departmentSelect = document.getElementById('department');
     const yearLevelSelect = document.getElementById('yearLevel');
@@ -165,12 +177,29 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // Form submission
+     // Form submission (with event OPEN check)
     const form = document.getElementById('attendanceForm');
     const successMsg = document.getElementById('successMessage');
     form.addEventListener('submit', async function (e) {
         e.preventDefault();
         if (!validatePage(2)) return;
+
+        // Get latest event info from DB
+        const db = getDatabase();
+        const eventsRef = ref(db, 'events');
+        const snapshot = await fetch("https://school-projects-c1354-default-rtdb.firebaseio.com/events.json").then(r => r.json());
+        if (!snapshot) {
+            alert("No attendance event is set. Please contact admin.");
+            return;
+        }
+        // Find the latest event (by createdAt)
+        const latestEventId = Object.entries(snapshot)
+            .sort((a, b) => (b[1].createdAt || '').localeCompare(a[1].createdAt || ''))[0][0];
+        const latestEvent = snapshot[latestEventId];
+        if (latestEvent.status !== 'open') {
+            alert(`Registration for "${latestEvent.title}" is closed. Please contact admin.`);
+            return;
+        }
 
         // Gather form data
         const data = {
@@ -185,9 +214,8 @@ document.addEventListener('DOMContentLoaded', function () {
         };
 
         try {
-            const db = getDatabase();
-            const registrationsRef = ref(db, 'registrations');
-            await push(registrationsRef, data);
+            const attendanceRef = ref(db, `attendance/${latestEventId}`);
+            await push(attendanceRef, data);
         } catch (err) {
             alert("There was an error submitting your attendance. Please try again.");
             return;
