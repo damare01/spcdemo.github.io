@@ -1,24 +1,18 @@
-/* -----------------
-   Base & Reset
-------------------- */
+/* ===== Base Reset ===== */
 *,
 *::before,
 *::after {
   box-sizing: border-box;
-  margin: 0;
-  padding: 0;
 }
 body {
   font-family: 'Segoe UI', 'Helvetica Neue', Arial, 'Liberation Sans', sans-serif;
   background: #f3f4f6;
   color: #222;
   min-height: 100vh;
+  margin: 0;
   line-height: 1.6;
 }
-
-/* -----------------
-   Layout Containers
-------------------- */
+/* ===== Layout Containers ===== */
 .page-container {
   padding-top: 2.5rem;
   padding-bottom: 2.5rem;
@@ -30,17 +24,10 @@ body {
   margin-left: auto;
   margin-right: auto;
 }
-.mt-8 {
-  margin-top: 2rem;
-}
-.py-10 {
-  padding-top: 2.5rem;
-  padding-bottom: 2.5rem;
-}
+.mt-8 { margin-top: 2rem; }
+.py-10 { padding-top: 2.5rem; padding-bottom: 2.5rem; }
 
-/* -----------------
-   Card & Shadows
-------------------- */
+/* ===== Card ===== */
 .form-card {
   background: #fff;
   border-radius: 1.5rem;
@@ -49,9 +36,7 @@ body {
   position: relative;
 }
 
-/* -----------------
-   Header Section
-------------------- */
+/* ===== Header Section ===== */
 .header-section {
   background: linear-gradient(90deg, #c81d25 0%, #f44336 100%);
   padding: 2.2rem 1rem 2.5rem 1rem;
@@ -74,7 +59,7 @@ body {
   margin: 0 auto 0.7rem auto;
   box-shadow: 0 2px 12px rgba(0,0,0,0.06);
   border: 4px solid #fff3;
-  z-index: 1;
+  z-index: 2;
   position: relative;
 }
 .floating-shapes {
@@ -104,9 +89,7 @@ body {
   bottom: -20px; right: 50px;
 }
 
-/* -----------------
-   Typography Utilities
-------------------- */
+/* ===== Typography Utilities ===== */
 .text-center { text-align: center; }
 .text-white { color: #fff; }
 .text-4xl { font-size: 2.5rem; }
@@ -130,9 +113,7 @@ body {
 .text-sm { font-size: 0.96em; }
 .mt-1 { margin-top: 0.25rem; }
 
-/* -----------------
-   Form Steps & Progress
-------------------- */
+/* ===== Form Steps & Progress ===== */
 .form-steps {
   display: flex;
   justify-content: center;
@@ -181,9 +162,7 @@ body {
   transition: width 0.3s;
 }
 
-/* -----------------
-   Form Pages
-------------------- */
+/* ===== Form Pages ===== */
 .form-section {
   padding: 2rem 2.5rem 2.5rem 2.5rem;
 }
@@ -199,9 +178,7 @@ body {
   to   { opacity: 1; transform: translateY(0); }
 }
 
-/* -----------------
-   Input Groups & Fields
-------------------- */
+/* ===== Input Groups & Fields ===== */
 .input-group {
   margin-bottom: 1.1rem;
   position: relative;
@@ -247,6 +224,13 @@ body {
   transform: translateY(-50%);
   color: #bdbdbd;
   pointer-events: none;
+  width: 1.25rem;
+  height: 1.25rem;
+  display: block;
+  z-index: 5;
+}
+.input-group .input-icon {
+  right: 2.2rem;
 }
 .select-wrapper {
   position: relative;
@@ -258,11 +242,12 @@ body {
   transform: translateY(-50%);
   pointer-events: none;
   color: #c81d25;
+  width: 1.25rem;
+  height: 1.25rem;
+  z-index: 6;
 }
 
-/* -----------------
-   Tooltip
-------------------- */
+/* ===== Tooltip ===== */
 .tooltip {
   display: inline-block;
   position: relative;
@@ -274,6 +259,8 @@ body {
   background: #c81d25;
   border-radius: 50%;
   padding: 1px;
+  width: 1em;
+  height: 1em;
 }
 .tooltip-text {
   visibility: hidden;
@@ -298,9 +285,7 @@ body {
   opacity: 1;
 }
 
-/* -----------------
-   Form Navigation Buttons
-------------------- */
+/* ===== Form Navigation Buttons ===== */
 .form-navigation {
   display: flex;
   justify-content: space-between;
@@ -341,9 +326,7 @@ body {
   padding-right: 2.2rem;
 }
 
-/* -----------------
-   Verification Badge & Summary
-------------------- */
+/* ===== Verification Badge & Summary ===== */
 .verification-badge {
   display: flex;
   align-items: center;
@@ -355,6 +338,11 @@ body {
   padding: 0.5em 1.1em;
   margin-bottom: 1.2em;
   font-size: 1.1em;
+}
+.verification-badge svg {
+  width: 1.5em;
+  height: 1.5em;
+  display: block;
 }
 .verification-summary {
   background: #f9fafb;
@@ -381,9 +369,7 @@ body {
   color: #2e2e2e;
 }
 
-/* -----------------
-   File Upload
-------------------- */
+/* ===== File Upload ===== */
 .upload-area {
   border: 2px dashed #c81d25;
   border-radius: 0.6rem;
@@ -408,6 +394,9 @@ body {
   height: 2.2rem;
   color: #c81d25;
   margin-bottom: 0.5rem;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
 }
 .upload-text {
   color: #c81d25;
@@ -425,6 +414,10 @@ body {
   cursor: pointer;
   transition: background 0.2s;
 }
+.upload-btn svg {
+  vertical-align: middle;
+  margin-right: 0.2em;
+}
 .upload-btn:hover {
   background: #b71c1c;
 }
@@ -435,9 +428,7 @@ body {
   margin-top: 1rem;
 }
 
-/* -----------------
-   File Preview
-------------------- */
+/* ===== File Preview ===== */
 .file-preview {
   display: flex;
   align-items: center;
@@ -458,6 +449,11 @@ body {
   align-items: center;
   justify-content: center;
 }
+.file-icon svg {
+  width: 1.5em;
+  height: 1.5em;
+  display: block;
+}
 .file-info {
   flex-grow: 1;
 }
@@ -475,14 +471,17 @@ body {
   display: inline-flex;
   align-items: center;
 }
+.file-action-btn svg {
+  width: 1em;
+  height: 1em;
+  display: inline-block;
+}
 .file-action-btn:hover {
   background: #c81d25;
   color: #fff;
 }
 
-/* -----------------
-   Divider
-------------------- */
+/* ===== Divider ===== */
 .form-divider {
   height: 1.5px;
   background: #f3f3f3;
@@ -490,9 +489,7 @@ body {
   border-radius: 2px;
 }
 
-/* -----------------
-   Terms & Conditions
-------------------- */
+/* ===== Terms & Conditions ===== */
 .terms-container {
   background: #f9f9f9;
   border-radius: 0.7rem;
@@ -515,6 +512,11 @@ body {
   align-items: center;
   justify-content: center;
 }
+.terms-icon svg {
+  width: 1.1em;
+  height: 1.1em;
+  display: block;
+}
 .list-disc {
   list-style-type: disc;
 }
@@ -525,9 +527,7 @@ body {
   margin-top: 0.5rem;
 }
 
-/* -----------------
-   Custom Checkbox
-------------------- */
+/* ===== Custom Checkbox ===== */
 .checkbox-wrapper {
   display: flex;
   align-items: flex-start;
@@ -578,9 +578,7 @@ body {
   transform: rotate(45deg);
 }
 
-/* -----------------
-   Success Message
-------------------- */
+/* ===== Success Message ===== */
 .success-message {
   background: #e8f5e9;
   border: 1.7px solid #43a047;
@@ -601,10 +599,12 @@ body {
   align-items: center;
   justify-content: center;
 }
+.success-icon svg {
+  width: 2.5em;
+  height: 2.5em;
+}
 
-/* -----------------
-   Confetti Animation
-------------------- */
+/* ===== Confetti Animation ===== */
 .confetti-container {
   position: fixed;
   left: 0; top: 0;
@@ -636,9 +636,7 @@ body {
   }
 }
 
-/* -----------------
-   Responsive Design
-------------------- */
+/* ===== Responsive Design ===== */
 @media (max-width: 640px) {
   .form-section {
     padding: 1rem 0.4rem 1.5rem 0.4rem;
@@ -653,11 +651,11 @@ body {
     border-radius: 0.5em 0.5em 0 0;
     padding: 1rem 0.1rem 1.7rem 0.1rem;
   }
+  .input-label { font-size: 0.97em; }
+  .input-field { font-size: 0.97em; }
 }
 
-/* -----------------
-   Utility Classes
-------------------- */
+/* ===== Utility Classes ===== */
 .hidden {
   display: none !important;
 }
