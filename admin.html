@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>College Red Cross Youth - Admin Panel</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Reuse your main style -->
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .admin-header {
+            background: linear-gradient(90deg, #c81d25 0%, #f44336 100%);
+            color: #fff;
+            padding: 2rem 1rem 1.5rem 1rem;
+            border-radius: 1.5rem 1.5rem 0 0;
+            text-align: center;
+            position: relative;
+        }
+        .admin-table-container {
+            background: #fff;
+            border-radius: 0 0 1.5rem 1.5rem;
+            box-shadow: 0 4px 24px 0 rgba(0,0,0,0.07);
+            padding: 2rem;
+        }
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .admin-table th, .admin-table td {
+            padding: 0.85em 1em;
+            text-align: left;
+        }
+        .admin-table th {
+            background: #f5f5f5;
+            color: #b71c1c;
+            font-weight: 700;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        .admin-table tr:not(:last-child) td {
+            border-bottom: 1px solid #eee;
+        }
+        .admin-table tr:hover {
+            background: #fdefef;
+        }
+        .admin-search-bar {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            align-items: center;
+        }
+        .admin-search-bar input, .admin-search-bar select {
+            font-size: 1rem;
+            padding: 0.55em 1em;
+            border-radius: 0.5em;
+            border: 1.5px solid #e9e9e9;
+        }
+        .admin-export-btn {
+            background: linear-gradient(90deg, #c81d25 0%, #f44336 100%);
+            color: #fff;
+            border: none;
+            border-radius: 0.5em;
+            padding: 0.6em 1.7em;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 2px 8px 0 #c81d2522;
+            transition: background 0.2s;
+            margin-left: auto;
+        }
+        .admin-export-btn:hover {
+            background: linear-gradient(90deg, #a8181e 0%, #d32f2f 100%);
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 0.18em 0.9em;
+            border-radius: 1em;
+            font-size: 0.96em;
+            font-weight: 600;
+            color: #fff;
+            background: #43a047;
+            letter-spacing: 0.01em;
+        }
+        .status-badge.pending {
+            background: #ff9800;
+        }
+        .status-badge.invalid {
+            background: #e53935;
+        }
+        @media (max-width: 700px) {
+            .admin-table-container {
+                padding: 1rem 0.2rem;
+            }
+            .admin-table th, .admin-table td {
+                font-size: 0.98rem;
+                padding: 0.6em 0.4em;
+            }
+            .admin-header {
+                border-radius: 0.7rem 0.7rem 0 0;
+                padding: 1rem 0.2rem 1rem 0.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-container py-10">
+        <div class="form-card max-w-4xl mx-auto">
+            <div class="admin-header">
+                <h1 class="text-3xl font-bold tracking-tight">Admin Panel</h1>
+                <div class="text-lg opacity-90 font-light">College Red Cross Youth Attendance Records</div>
+            </div>
+            <div class="admin-table-container">
+                <!-- Search, filter, export -->
+                <div class="admin-search-bar">
+                    <input type="text" id="searchInput" placeholder="Search name, email, or program...">
+                    <select id="departmentFilter">
+                        <option value="">All Departments</option>
+                        <option value="SHS">Senior High School</option>
+                        <option value="College">College</option>
+                    </select>
+                    <select id="statusFilter">
+                        <option value="">All Statuses</option>
+                        <option value="verified">Verified</option>
+                        <option value="pending">Pending</option>
+                        <option value="invalid">Invalid</option>
+                    </select>
+                    <button class="admin-export-btn" id="exportBtn">Export CSV</button>
+                </div>
+                <!-- Attendance Table -->
+                <div style="overflow-x:auto;">
+                    <table class="admin-table" id="adminTable">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Department</th>
+                                <th>Year & Section</th>
+                                <th>Strand/Program</th>
+                                <th>Status</th>
+                                <th>Proof</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Dynamic rows here -->
+                        </tbody>
+                    </table>
+                </div>
+                <div id="noDataMsg" class="text-gray-500 text-center py-4 hidden">
+                    No records found matching your criteria.
+                </div>
+            </div>
+        </div>
+        <div class="text-center text-gray-500 text-sm mt-8">
+            <p>© 2023 College Red Cross Youth Organization</p>
+        </div>
+    </div>
+    <script>
+    // Sample data, replace/fetch from real data store in production
+    const registrations = [
+        {
+            name: "Juan Dela Cruz",
+            email: "juan@email.com",
+            department: "SHS",
+            year: "Grade 11",
+            section: "A",
+            strand: "STEM",
+            program: "",
+            status: "verified",
+            proofUrl: "#"
+        },
+        {
+            name: "Maria Clara",
+            email: "maria@email.com",
+            department: "College",
+            year: "2nd Year",
+            section: "C",
+            strand: "",
+            program: "B.S IN NURSING",
+            status: "pending",
+            proofUrl: "#"
+        },
+        {
+            name: "Pedro Santos",
+            email: "pedro@email.com",
+            department: "College",
+            year: "4th Year",
+            section: "D",
+            strand: "",
+            program: "B.S IN ACCOUNTING INFORMATION",
+            status: "invalid",
+            proofUrl: "#"
+        }
+    ];
+
+    function renderTable(data) {
+        const tbody = document.querySelector("#adminTable tbody");
+        tbody.innerHTML = "";
+        if (data.length === 0) {
+            document.getElementById("noDataMsg").classList.remove("hidden");
+            return;
+        }
+        document.getElementById("noDataMsg").classList.add("hidden");
+        data.forEach((r, idx) => {
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+                <td>${idx + 1}</td>
+                <td>${r.name}</td>
+                <td>${r.email}</td>
+                <td>${r.department}</td>
+                <td>${r.year} ${r.section}</td>
+                <td>${r.department === "SHS" ? r.strand : r.program}</td>
+                <td>
+                    <span class="status-badge ${r.status}">${r.status.charAt(0).toUpperCase() + r.status.slice(1)}</span>
+                </td>
+                <td>
+                    <a href="${r.proofUrl}" target="_blank" class="text-sm text-blue-600 underline">View</a>
+                </td>
+            `;
+            tbody.appendChild(tr);
+        });
+    }
+
+    function filterTable() {
+        const q = document.getElementById("searchInput").value.trim().toLowerCase();
+        const dept = document.getElementById("departmentFilter").value;
+        const stat = document.getElementById("statusFilter").value;
+        const filtered = registrations.filter(r => {
+            let match = true;
+            if (q) {
+                match = (
+                    r.name.toLowerCase().includes(q) ||
+                    r.email.toLowerCase().includes(q) ||
+                    r.program.toLowerCase().includes(q) ||
+                    r.strand.toLowerCase().includes(q)
+                );
+            }
+            if (match && dept) match = r.department === dept;
+            if (match && stat) match = r.status === stat;
+            return match;
+        });
+        renderTable(filtered);
+    }
+
+    document.getElementById("searchInput").addEventListener("input", filterTable);
+    document.getElementById("departmentFilter").addEventListener("change", filterTable);
+    document.getElementById("statusFilter").addEventListener("change", filterTable);
+
+    // Export to CSV
+    document.getElementById("exportBtn").addEventListener("click", function() {
+        let rows = [
+            ["#", "Name", "Email", "Department", "Year & Section", "Strand/Program", "Status", "Proof"]
+        ];
+        const q = document.getElementById("searchInput").value.trim().toLowerCase();
+        const dept = document.getElementById("departmentFilter").value;
+        const stat = document.getElementById("statusFilter").value;
+        const filtered = registrations.filter(r => {
+            let match = true;
+            if (q) {
+                match = (
+                    r.name.toLowerCase().includes(q) ||
+                    r.email.toLowerCase().includes(q) ||
+                    r.program.toLowerCase().includes(q) ||
+                    r.strand.toLowerCase().includes(q)
+                );
+            }
+            if (match && dept) match = r.department === dept;
+            if (match && stat) match = r.status === stat;
+            return match;
+        });
+        filtered.forEach((r, idx) => {
+            rows.push([
+                idx+1, r.name, r.email, r.department, r.year + " " + r.section,
+                r.department === "SHS" ? r.strand : r.program,
+                r.status, r.proofUrl
+            ]);
+        });
+        let csvContent = "data:text/csv;charset=utf-8," 
+            + rows.map(e => e.map(val => `"${(val||"").replace(/"/g,'""')}"`).join(",")).join("\n");
+        const a = document.createElement("a");
+        a.setAttribute("href", encodeURI(csvContent));
+        a.setAttribute("download", "attendance_records.csv");
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+    });
+
+    // Initial render
+    renderTable(registrations);
+    </script>
+</body>
+</html>
