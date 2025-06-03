@@ -64,33 +64,38 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // Update summary information
-    function updateSummary() {
-        const name = document.getElementById('name').value;
-        const email = document.getElementById('email').value;
-        const department = departmentSelect.value;
-        const yearLevel = yearLevelSelect.value;
-        const section = document.getElementById('section').value;
-        const strand = strandSelect.value;
-        const program = programSelect.value;
-        
-        summaryName.textContent = name || '-';
-        summaryEmail.textContent = email || '-';
-        summaryDepartment.textContent = department || '-';
-        summaryYearSection.textContent = `${yearLevel || '-'}-${section || '-'}`;
-        
-        if (department === 'SHS') {
-            summaryStrandContainer.classList.remove('hidden');
-            summaryProgramContainer.classList.add('hidden');
-            summaryStrand.textContent = strand || '-';
-        } else if (department === 'College') {
-            summaryProgramContainer.classList.remove('hidden');
-            summaryStrandContainer.classList.add('hidden');
-            summaryProgram.textContent = program || '-';
-        } else {
-            summaryStrandContainer.classList.add('hidden');
-            summaryProgramContainer.classList.add('hidden');
-        }
+   function updateSummary() {
+    const name = document.getElementById('name').value;
+    const email = document.getElementById('email').value;
+    const department = departmentSelect.value;
+    const yearLevel = yearLevelSelect.value;
+    const section = document.getElementById('section').value;
+    const strand = strandSelect.value;
+    const program = programSelect.value;
+
+    summaryName.textContent = name || '-';
+    summaryEmail.textContent = email || '-';
+    summaryDepartment.textContent = department || '-';
+    summaryYearSection.textContent = `${yearLevel || '-'}-${section || '-'}`;
+    
+    // Only show one of strand/program in summary
+    if (department === 'SHS') {
+        summaryStrandContainer.classList.remove('hidden');
+        summaryStrand.textContent = strand || '-';
+        summaryProgramContainer.classList.add('hidden');
+        summaryProgram.textContent = '';
+    } else if (department === 'College') {
+        summaryProgramContainer.classList.remove('hidden');
+        summaryProgram.textContent = program || '-';
+        summaryStrandContainer.classList.add('hidden');
+        summaryStrand.textContent = '';
+    } else {
+        summaryStrandContainer.classList.add('hidden');
+        summaryProgramContainer.classList.add('hidden');
+        summaryStrand.textContent = '';
+        summaryProgram.textContent = '';
     }
+}
     
     // Event listeners for navigation
     toPage1.forEach(btn => {
