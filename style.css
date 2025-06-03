@@ -231,13 +231,15 @@ body {
 }
 .select-wrapper {
     position: relative;
+    width: 100%;
+    min-width: 0;
 }
-
 .select-wrapper select.input-field {
     appearance: none;
     padding-right: 52px;
     padding-left: 52px;
     background: #fcfcfc;
+    /* Keep space for the arrow */
 }
 .select-wrapper .input-icon {
     left: 18px;
@@ -247,21 +249,21 @@ body {
 }
 .select-wrapper .select-arrow {
     position: absolute;
-    right: 18px;
     top: 50%;
+    right: 14px;
     transform: translateY(-50%);
     pointer-events: none;
     color: #a0aec0;
-    z-index: 4;
-    background-color: #fff;
-    padding-left: 4px;
+    z-index: 10;
+    background: #fff;
     border-radius: 50%;
-    height: 24px;
-    width: 24px;
+    width: 28px;
+    height: 28px;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+    font-size: 1.1em;
 }
 .select-wrapper:focus-within .select-arrow {
     color: var(--primary);
@@ -716,8 +718,9 @@ body {
     transform: rotate(45deg);
 }
 
-/* Success Message */
+/* Success Message - hidden by default */
 .success-message {
+    display: none;
     background: linear-gradient(135deg, #10b981 0%, #059669 100%);
     border-radius: 16px;
     padding: 2rem;
@@ -725,6 +728,9 @@ body {
     box-shadow: 0 4px 14px rgba(16, 185, 129, 0.13);
     animation: slideInUp 0.5s ease-out forwards;
     margin-top: 1.5rem;
+}
+.success-message.active {
+    display: block;
 }
 .success-icon {
     background-color: rgba(255, 255, 255, 0.17);
