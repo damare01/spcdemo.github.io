@@ -13,75 +13,108 @@
             <h1>COLLEGE RED CROSS YOUTH</h1>
             <h2>Attendance Form</h2>
         </header>
+        <div class="progressbar">
+            <div class="progress-step active" data-step="1">
+                <span>1</span>
+                <label>Personal Info</label>
+            </div>
+            <div class="progress-step" data-step="2">
+                <span>2</span>
+                <label>Academic Details</label>
+            </div>
+            <div class="progress-step" data-step="3">
+                <span>3</span>
+                <label>Verification</label>
+            </div>
+        </div>
         <form id="attendanceForm" enctype="multipart/form-data">
-            <div class="form-group">
-                <label for="name">Name <span>*</span></label>
-                <input type="text" id="name" name="name" required autocomplete="off">
-            </div>
-            <div class="form-group">
-                <label for="department">Department <span>*</span></label>
-                <select id="department" name="department" required>
-                    <option value="">Select Department</option>
-                    <option value="SHS">SHS</option>
-                    <option value="College">College</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="yearLevel">Year Level <span>*</span></label>
-                <select id="yearLevel" name="yearLevel" required>
-                    <option value="">Select Year Level</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="section">Section <span>*</span></label>
-                <select id="section" name="section" required>
-                    <option value="">Select Section</option>
-                    <!-- A-Z -->
-                    <script>
-                        for(let i=65; i<=90; i++) document.write(`<option value="${String.fromCharCode(i)}">${String.fromCharCode(i)}</option>`);
-                    </script>
-                </select>
-            </div>
-            <div class="form-group" id="strandGroup" style="display:none;">
-                <label for="strand">STRAND <span>*</span></label>
-                <select id="strand" name="strand">
-                    <option value="">Select Strand</option>
-                    <option value="STEM">STEM</option>
-                    <option value="HUMSS">HUMSS</option>
-                    <option value="GAS">GAS</option>
-                    <option value="TVL">TVL</option>
-                    <option value="ABM">ABM</option>
-                </select>
-            </div>
-            <div class="form-group" id="programGroup" style="display:none;">
-                <label for="program">Program <span>*</span></label>
-                <select id="program" name="program">
-                    <option value="">Select Program</option>
-                    <option value="A.B. IN ENGLISH">A.B. IN ENGLISH</option>
-                    <option value="B.S. IN ACCOUNTING INFORMATION">B.S. IN ACCOUNTING INFORMATION</option>
-                    <option value="B.S IN HUMAN SERVICES">B.S IN HUMAN SERVICES</option>
-                    <option value="B.S OF SECONDARY EDUCATION">B.S OF SECONDARY EDUCATION</option>
-                    <option value="B.S IN BUSINESS ADMINISTRATION">B.S IN BUSINESS ADMINISTRATION</option>
-                    <option value="B.S IN BIOLOGY">B.S IN BIOLOGY</option>
-                    <option value="B.S IN MEDICAL LABORATORY SCIENCES">B.S IN MEDICAL LABORATORY SCIENCES</option>
-                    <option value="B.S IN NURSING">B.S IN NURSING</option>
-                    <option value="B.S IN PHARMACY">B.S IN PHARMACY</option>
-                    <option value="B.S IN PHYSICAL THERAPY">B.S IN PHYSICAL THERAPY</option>
-                    <option value="B.S IN PSYCHOLOGY">B.S IN PSYCHOLOGY</option>
-                    <option value="B.S IN RADIOLOGIC TECHNOLOGY">B.S IN RADIOLOGIC TECHNOLOGY</option>
-                    <option value="B.S IN RESPIRATORY THERAPY">B.S IN RESPIRATORY THERAPY</option>
-                    <option value="OTHER">OTHER</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="email">Email <span>*</span></label>
-                <input type="email" id="email" name="email" required autocomplete="off">
-            </div>
-            <div class="form-group">
-                <label for="proof">Proof of Attendance <span>*</span></label>
-                <input type="file" id="proof" name="proof" accept="image/*,application/pdf" required>
-            </div>
-            <button type="submit" class="submit-btn">Submit Attendance</button>
+            <!-- Section 1: Personal Info -->
+            <section class="form-section active" data-section="1">
+                <div class="form-group">
+                    <label for="name">Name <span>*</span></label>
+                    <input type="text" id="name" name="name" required autocomplete="off">
+                </div>
+                <div class="form-group">
+                    <label for="email">Email <span>*</span></label>
+                    <input type="email" id="email" name="email" required autocomplete="off">
+                </div>
+                <div class="form-nav">
+                    <button type="button" class="next-btn" data-next="2">Next</button>
+                </div>
+            </section>
+            <!-- Section 2: Academic Details -->
+            <section class="form-section" data-section="2">
+                <div class="form-group">
+                    <label for="department">Department <span>*</span></label>
+                    <select id="department" name="department" required>
+                        <option value="">Select Department</option>
+                        <option value="SHS">SHS</option>
+                        <option value="College">College</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="yearLevel">Year Level <span>*</span></label>
+                    <select id="yearLevel" name="yearLevel" required>
+                        <option value="">Select Year Level</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="section">Section <span>*</span></label>
+                    <select id="section" name="section" required>
+                        <option value="">Select Section</option>
+                        <!-- A-Z -->
+                        <script>
+                            for(let i=65; i<=90; i++) document.write(`<option value="${String.fromCharCode(i)}">${String.fromCharCode(i)}</option>`);
+                        </script>
+                    </select>
+                </div>
+                <div class="form-group" id="strandGroup" style="display:none;">
+                    <label for="strand">STRAND <span>*</span></label>
+                    <select id="strand" name="strand">
+                        <option value="">Select Strand</option>
+                        <option value="STEM">STEM</option>
+                        <option value="HUMSS">HUMSS</option>
+                        <option value="GAS">GAS</option>
+                        <option value="TVL">TVL</option>
+                        <option value="ABM">ABM</option>
+                    </select>
+                </div>
+                <div class="form-group" id="programGroup" style="display:none;">
+                    <label for="program">Program <span>*</span></label>
+                    <select id="program" name="program">
+                        <option value="">Select Program</option>
+                        <option value="A.B. IN ENGLISH">A.B. IN ENGLISH</option>
+                        <option value="B.S. IN ACCOUNTING INFORMATION">B.S. IN ACCOUNTING INFORMATION</option>
+                        <option value="B.S IN HUMAN SERVICES">B.S IN HUMAN SERVICES</option>
+                        <option value="B.S OF SECONDARY EDUCATION">B.S OF SECONDARY EDUCATION</option>
+                        <option value="B.S IN BUSINESS ADMINISTRATION">B.S IN BUSINESS ADMINISTRATION</option>
+                        <option value="B.S IN BIOLOGY">B.S IN BIOLOGY</option>
+                        <option value="B.S IN MEDICAL LABORATORY SCIENCES">B.S IN MEDICAL LABORATORY SCIENCES</option>
+                        <option value="B.S IN NURSING">B.S IN NURSING</option>
+                        <option value="B.S IN PHARMACY">B.S IN PHARMACY</option>
+                        <option value="B.S IN PHYSICAL THERAPY">B.S IN PHYSICAL THERAPY</option>
+                        <option value="B.S IN PSYCHOLOGY">B.S IN PSYCHOLOGY</option>
+                        <option value="B.S IN RADIOLOGIC TECHNOLOGY">B.S IN RADIOLOGIC TECHNOLOGY</option>
+                        <option value="B.S IN RESPIRATORY THERAPY">B.S IN RESPIRATORY THERAPY</option>
+                        <option value="OTHER">OTHER</option>
+                    </select>
+                </div>
+                <div class="form-nav">
+                    <button type="button" class="prev-btn" data-prev="1">Back</button>
+                    <button type="button" class="next-btn" data-next="3">Next</button>
+                </div>
+            </section>
+            <!-- Section 3: Verification -->
+            <section class="form-section" data-section="3">
+                <div class="form-group">
+                    <label for="proof">Proof of Attendance <span>*</span></label>
+                    <input type="file" id="proof" name="proof" accept="image/*,application/pdf" required>
+                </div>
+                <div class="form-nav">
+                    <button type="button" class="prev-btn" data-prev="2">Back</button>
+                    <button type="submit" class="submit-btn">Submit Attendance</button>
+                </div>
+            </section>
         </form>
         <div id="formMessage"></div>
     </div>
