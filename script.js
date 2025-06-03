@@ -1,4 +1,6 @@
 import { getDatabase, ref, push } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-database.js";
+import { getStorage, ref as sRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-storage.js";
+
 
 document.addEventListener('DOMContentLoaded', function () {
     // Multi-step navigation
@@ -177,7 +179,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-     // Form submission (with event OPEN check)
+     // Form submission
     const form = document.getElementById('attendanceForm');
     const successMsg = document.getElementById('successMessage');
     form.addEventListener('submit', async function (e) {
@@ -186,16 +188,15 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Get latest event info from DB
         const db = getDatabase();
-        const eventsRef = ref(db, 'events');
-        const snapshot = await fetch("https://school-projects-c1354-default-rtdb.firebaseio.com/events.json").then(r => r.json());
-        if (!snapshot) {
+        const storage = getStorage();
+        const eventsSnapshot = await fetch("https://school-projects-c1354-default-rtdb.firebaseio.com/events.json").then(r => r.json());
+        if (!eventsSnapshot) {
             alert("No attendance event is set. Please contact admin.");
             return;
         }
-        // Find the latest event (by createdAt)
-        const latestEventId = Object.entries(snapshot)
+        const latestEventId = Object.entries(eventsSnapshot)
             .sort((a, b) => (b[1].createdAt || '').localeCompare(a[1].createdAt || ''))[0][0];
-        const latestEvent = snapshot[latestEventId];
+        const latestEvent = eventsSnapshot[latestEventId];
         if (latestEvent.status !== 'open') {
             alert(`Registration for "${latestEvent.title}" is closed. Please contact admin.`);
             return;
@@ -212,6 +213,30 @@ document.addEventListener('DOMContentLoaded', function () {
             program: document.getElementById('program').value || "",
             timestamp: new Date().toISOString(),
         };
+
+        // Handle file upload
+        const proofInput = document.getElementById('proof');
+        const file = proofInput.files && proofInput.files[0];
+
+        if (!file) {
+            alert("Please upload your proof of attendance.");
+            return;
+        }
+
+        let imageUrl = "";
+        try {
+            // Unique storage path: attendance/eventId/useremail-timestamp-filename
+            const filePath = `attendance/${latestEventId}/${data.email.replace(/[.#$[\]]/g,'_')}_${Date.now()}_${file.name}`;
+            const fileRef = sRef(storage, filePath);
+            await uploadBytes(fileRef, file);
+            imageUrl = await getDownloadURL(fileRef);
+        } catch (err) {
+            alert("Error uploading file. Please try again.");
+            return;
+        }
+
+        // Save image URL in the entry
+        data.proofUrl = imageUrl;
 
         try {
             const attendanceRef = ref(db, `attendance/${latestEventId}`);
