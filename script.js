@@ -1,3 +1,4 @@
+document.addEventListener("DOMContentLoaded", function() {
 // College Red Cross Youth - Attendance Registration Form Script
 
 // DOM Elements
@@ -115,7 +116,6 @@ departmentSelect.addEventListener("change", () => {
     updateAcademicFields();
     yearLevelSelect.value = '';
 });
-
 
 // --- Navigation Logic ---
 toPage2Btn.addEventListener("click", () => {
@@ -250,4 +250,5 @@ updateAcademicFields();
 // --- Accessibility: Remove invalid on input ---
 document.querySelectorAll(".input-field").forEach(input => {
     input.addEventListener("input", () => input.classList.remove("invalid"));
+});
 });
