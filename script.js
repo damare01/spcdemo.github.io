@@ -1,3 +1,5 @@
+import { getDatabase, ref, push } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-database.js";
+
 document.addEventListener('DOMContentLoaded', function () {
     // Multi-step navigation
     const pages = Array.from(document.querySelectorAll('.form-page'));
@@ -166,11 +168,32 @@ document.addEventListener('DOMContentLoaded', function () {
     // Form submission
     const form = document.getElementById('attendanceForm');
     const successMsg = document.getElementById('successMessage');
-    form.addEventListener('submit', function (e) {
+    form.addEventListener('submit', async function (e) {
         e.preventDefault();
         if (!validatePage(2)) return;
+
+        // Gather form data
+        const data = {
+            name: document.getElementById('name').value,
+            email: document.getElementById('email').value,
+            department: document.getElementById('department').value,
+            yearLevel: document.getElementById('yearLevel').value,
+            section: document.getElementById('section').value,
+            strand: document.getElementById('strand').value || "",
+            program: document.getElementById('program').value || "",
+            timestamp: new Date().toISOString(),
+        };
+
+        try {
+            const db = getDatabase();
+            const registrationsRef = ref(db, 'registrations');
+            await push(registrationsRef, data);
+        } catch (err) {
+            alert("There was an error submitting your attendance. Please try again.");
+            return;
+        }
+
         form.classList.add('hidden');
         successMsg.classList.remove('hidden');
-        // Confetti removed!
     });
 });
