@@ -179,17 +179,23 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-     // Form submission
+     // Form submission with Firebase Storage image upload
     const form = document.getElementById('attendanceForm');
     const successMsg = document.getElementById('successMessage');
     form.addEventListener('submit', async function (e) {
         e.preventDefault();
         if (!validatePage(2)) return;
 
-        // Get latest event info from DB
+        // Get latest event info from Firebase
         const db = getDatabase();
         const storage = getStorage();
-        const eventsSnapshot = await fetch("https://school-projects-c1354-default-rtdb.firebaseio.com/events.json").then(r => r.json());
+        let eventsSnapshot;
+        try {
+            eventsSnapshot = await fetch("https://school-projects-c1354-default-rtdb.firebaseio.com/events.json").then(r => r.json());
+        } catch (err) {
+            alert("Could not connect to attendance server. Please try again.");
+            return;
+        }
         if (!eventsSnapshot) {
             alert("No attendance event is set. Please contact admin.");
             return;
@@ -217,25 +223,31 @@ document.addEventListener('DOMContentLoaded', function () {
         // Handle file upload
         const proofInput = document.getElementById('proof');
         const file = proofInput.files && proofInput.files[0];
-
         if (!file) {
             alert("Please upload your proof of attendance.");
+            return;
+        }
+        if (file.size > 5 * 1024 * 1024) {
+            alert("File too large. Please upload images less than 5MB.");
+            return;
+        }
+        if (!file.type.startsWith("image/")) {
+            alert("Only image files are allowed.");
             return;
         }
 
         let imageUrl = "";
         try {
-            // Unique storage path: attendance/eventId/useremail-timestamp-filename
-            const filePath = `attendance/${latestEventId}/${data.email.replace(/[.#$[\]]/g,'_')}_${Date.now()}_${file.name}`;
+            const safeEmail = data.email.replace(/[.#$[\]@]/g, '_');
+            const filePath = `attendance/${latestEventId}/${safeEmail}_${Date.now()}_${encodeURIComponent(file.name)}`;
             const fileRef = sRef(storage, filePath);
             await uploadBytes(fileRef, file);
             imageUrl = await getDownloadURL(fileRef);
         } catch (err) {
-            alert("Error uploading file. Please try again.");
+            alert("There was an error uploading your file. Please try again or contact admin.");
             return;
         }
 
-        // Save image URL in the entry
         data.proofUrl = imageUrl;
 
         try {
@@ -249,4 +261,3 @@ document.addEventListener('DOMContentLoaded', function () {
         form.classList.add('hidden');
         successMsg.classList.remove('hidden');
     });
-});
