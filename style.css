@@ -120,11 +120,17 @@ body {
 .red-cross-logo::before {
     width: 16px;
     height: 60px;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
 }
 
 .red-cross-logo::after {
     width: 60px;
     height: 16px;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
 }
 
 .form-section {
@@ -136,7 +142,22 @@ body {
     margin-bottom: 2rem;
 }
 
-.input-label {
+/* Ensures the icon is visually contained within the input/select */
+.input-group .input-icon,
+.select-wrapper .input-icon {
+    position: absolute;
+    left: 18px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #a0aec0;
+    pointer-events: none;
+    width: 22px;
+    height: 22px;
+    z-index: 5;
+    transition: all 0.3s ease;
+}
+
+.input-group .input-label {
     position: absolute;
     left: 16px;
     top: -12px;
@@ -148,9 +169,17 @@ body {
     z-index: 10;
     border-radius: 4px;
     transition: all 0.3s ease;
+    pointer-events: none;
 }
 
-.input-field {
+.input-group .tooltip {
+    display: inline-block;
+    margin-left: 6px;
+    vertical-align: middle;
+}
+
+.input-field,
+.input-group select.input-field {
     width: 100%;
     padding: 16px 20px;
     border: 2px solid #e2e8f0;
@@ -158,6 +187,52 @@ body {
     font-size: 1rem;
     transition: all 0.3s ease;
     background-color: white;
+    box-sizing: border-box;
+}
+
+.input-group .input-with-icon,
+.select-wrapper .input-with-icon {
+    padding-left: 48px;
+}
+
+.input-group .input-field:focus + .input-icon,
+.input-group .select-wrapper:focus-within .input-icon {
+    color: var(--primary);
+}
+
+.select-wrapper {
+    position: relative;
+}
+
+.select-wrapper .input-icon {
+    left: 18px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.select-wrapper .input-field,
+.select-wrapper select.input-field {
+    padding-left: 48px;
+    width: 100%;
+    appearance: none;
+}
+
+.select-wrapper .select-arrow {
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    color: #a0aec0;
+    z-index: 3;
+}
+
+.select-wrapper:focus-within .select-arrow {
+    color: var(--primary);
+}
+
+.select-wrapper select.input-field:focus ~ .select-arrow {
+    color: var(--primary);
 }
 
 .input-field:focus {
@@ -167,213 +242,18 @@ body {
     transform: translateY(-2px);
 }
 
-.input-icon {
-    position: absolute;
-    left: 16px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #a0aec0;
-    transition: all 0.3s ease;
+.border-red-500 {
+    border-color: #ef4444 !important;
 }
 
-.input-with-icon {
-    padding-left: 48px;
-}
-
-.input-field:focus + .input-icon {
-    color: var(--primary);
-}
-
-.select-wrapper {
-    position: relative;
-}
-
-.select-arrow {
-    position: absolute;
-    right: 16px;
-    top: 50%;
-    transform: translateY(-50%);
-    pointer-events: none;
-    color: #a0aec0;
-    transition: all 0.3s ease;
-}
-
-select:focus + .select-arrow {
-    color: var(--primary);
-}
-
-.file-input-label {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 16px 24px;
-    border-radius: 12px;
-    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
-    color: white;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 12px rgba(226, 27, 60, 0.3);
-}
-
-.file-input-label:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(226, 27, 60, 0.4);
-}
-
-.file-input-label:active {
-    transform: translateY(0);
-}
-
-.submit-btn {
-    width: 100%;
-    padding: 16px 24px;
-    border: none;
-    border-radius: 12px;
-    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
-    color: white;
-    font-size: 1.1rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 12px rgba(226, 27, 60, 0.3);
-}
-
-.submit-btn:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 6px 16px rgba(226, 27, 60, 0.4);
-}
-
-.submit-btn:active {
-    transform: translateY(-1px);
-}
-
-.form-divider {
-    height: 1px;
-    background: linear-gradient(to right, transparent, #e2e8f0, transparent);
-    margin: 2.5rem 0;
-}
-
-.success-message {
-    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-    border-radius: 16px;
-    padding: 1.5rem;
-    color: white;
-    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
-    animation: slideInUp 0.5s ease-out forwards;
-}
-
-@keyframes slideInUp {
-    from {
-        opacity: 0;
-        transform: translateY(30px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.success-icon {
-    background-color: rgba(255, 255, 255, 0.2);
-    border-radius: 50%;
-    padding: 10px;
-    margin-right: 16px;
-}
-
-.file-name-display {
-    margin-top: 12px;
-    padding: 8px 16px;
-    background-color: #f8fafc;
-    border-radius: 8px;
-    font-size: 0.9rem;
-    display: flex;
-    align-items: center;
-    max-width: 100%;
-    overflow: hidden;
-}
-
-.file-name {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.floating-shapes {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-    overflow: hidden;
-    z-index: -1;
-    opacity: 0.5;
-}
-
-.shape {
-    position: absolute;
-    background-color: var(--primary);
-    opacity: 0.1;
-    border-radius: 50%;
-}
-
-.shape-1 {
-    width: 120px;
-    height: 120px;
-    top: -30px;
-    right: 10%;
-    animation: float 8s ease-in-out infinite;
-}
-
-.shape-2 {
-    width: 80px;
-    height: 80px;
-    bottom: 20%;
-    left: 5%;
-    animation: float 9s ease-in-out infinite 1s;
-}
-
-.shape-3 {
-    width: 60px;
-    height: 60px;
-    bottom: 15%;
-    right: 8%;
-    animation: float 7s ease-in-out infinite 2s;
-}
-
-@keyframes float {
-    0% {
-        transform: translateY(0) rotate(0deg);
-    }
-    50% {
-        transform: translateY(-20px) rotate(10deg);
-    }
-    100% {
-        transform: translateY(0) rotate(0deg);
-    }
-}
-
-.required-indicator {
-    color: var(--primary);
-    margin-left: 3px;
-}
-
-.tooltip {
-    position: relative;
-    display: inline-block;
-    margin-left: 6px;
-    cursor: help;
-}
-
+/* Tooltip styles */
 .tooltip-icon {
     color: #a0aec0;
     transition: color 0.3s ease;
 }
-
 .tooltip:hover .tooltip-icon {
     color: var(--secondary);
 }
-
 .tooltip-text {
     visibility: hidden;
     width: 200px;
@@ -392,7 +272,6 @@ select:focus + .select-arrow {
     font-size: 0.8rem;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
-
 .tooltip-text::after {
     content: "";
     position: absolute;
@@ -403,7 +282,6 @@ select:focus + .select-arrow {
     border-style: solid;
     border-color: var(--secondary) transparent transparent transparent;
 }
-
 .tooltip:hover .tooltip-text {
     visibility: visible;
     opacity: 1;
@@ -551,7 +429,6 @@ select:focus + .select-arrow {
     transition: width 0.3s ease;
 }
 
-/* Enhanced verification page styles */
 .upload-area {
     border: 2px dashed #e2e8f0;
     border-radius: 16px;
@@ -618,6 +495,17 @@ select:focus + .select-arrow {
     border-radius: 12px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
     animation: slideInUp 0.5s ease-out forwards;
+}
+
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .file-icon {
@@ -808,41 +696,60 @@ select:focus + .select-arrow {
     .form-section {
         padding: 2rem 1.5rem;
     }
-    
     .header-section {
         padding: 2rem 1.5rem;
     }
-    
     .red-cross-logo {
         width: 80px;
         height: 80px;
     }
-    
     .red-cross-logo::before {
         width: 14px;
         height: 50px;
     }
-    
     .red-cross-logo::after {
         width: 50px;
         height: 14px;
     }
-    
     .step-text {
         font-size: 0.75rem;
     }
-    
     .summary-item {
         flex-direction: column;
     }
-    
     .summary-label, .summary-value {
         width: 100%;
     }
-    
     .summary-label {
         margin-bottom: 4px;
     }
+    .input-group .input-icon,
+    .select-wrapper .input-icon {
+        left: 12px;
+        width: 20px;
+        height: 20px;
+    }
+    .select-wrapper .select-arrow {
+        right: 8px;
+    }
+}
+
+.file-name-display {
+    margin-top: 12px;
+    padding: 8px 16px;
+    background-color: #f8fafc;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    max-width: 100%;
+    overflow: hidden;
+}
+
+.file-name {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 /* File upload animation */
