@@ -1,16 +1,4 @@
-<<<<<<< HEAD
-import { firebaseConfig } from './firebaseConfig.js';
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
-import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-analytics.js";
 import { getDatabase, ref, push } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-database.js";
-
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
-=======
-// Import Firebase Database (no need to import app/config here; it's in the HTML <head> and globally initialized)
-import { getDatabase, ref, push } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-database.js";
->>>>>>> 5516f2d413fabc30d943d51cf2872e29d516fdb0
 
 document.addEventListener('DOMContentLoaded', function () {
     // Multi-step navigation
@@ -30,21 +18,17 @@ document.addEventListener('DOMContentLoaded', function () {
     function prevPage() { goToPage(currentPage - 1); }
 
     // Navigation buttons with unique IDs
-    const toPage2Next = document.getElementById('toPage2Next');
-    const toPage3Next = document.getElementById('toPage3Next');
-    const toPage1Prev = document.getElementById('toPage1Prev');
-    const toPage2Prev = document.getElementById('toPage2Prev');
-    if (toPage2Next) toPage2Next.addEventListener('click', function () {
+    document.getElementById('toPage2Next').addEventListener('click', function () {
         if (validatePage(0)) nextPage();
     });
-    if (toPage3Next) toPage3Next.addEventListener('click', function () {
+    document.getElementById('toPage3Next').addEventListener('click', function () {
         if (validatePage(1)) {
             updateSummary();
             nextPage();
         }
     });
-    if (toPage1Prev) toPage1Prev.addEventListener('click', prevPage);
-    if (toPage2Prev) toPage2Prev.addEventListener('click', prevPage);
+    document.getElementById('toPage1Prev').addEventListener('click', prevPage);
+    document.getElementById('toPage2Prev').addEventListener('click', prevPage);
 
     // Dynamic Year Level Options
     const departmentSelect = document.getElementById('department');
@@ -151,76 +135,65 @@ document.addEventListener('DOMContentLoaded', function () {
         proofInput.value = '';
         uploadArea.classList.remove('file-uploaded');
     }
-    if (proofInput) {
-        proofInput.addEventListener('change', function (e) {
-            const file = this.files[0];
-            if (file) showFilePreview(file);
-        });
-    }
-    if (uploadArea) {
-        uploadArea.addEventListener('click', function () {
-            proofInput.click();
-        });
-    }
-    if (removeFileBtn) {
-        removeFileBtn.addEventListener('click', function (e) {
-            e.stopPropagation();
-            clearFilePreview();
-        });
-    }
+    proofInput.addEventListener('change', function (e) {
+        const file = this.files[0];
+        if (file) showFilePreview(file);
+    });
+    uploadArea.addEventListener('click', function () {
+        proofInput.click();
+    });
+    removeFileBtn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        clearFilePreview();
+    });
     // Drag and drop
-    if (uploadArea) {
-        uploadArea.addEventListener('dragover', function (e) {
-            e.preventDefault();
-            this.classList.add('dragover');
-        });
-        uploadArea.addEventListener('dragleave', function (e) {
-            e.preventDefault();
-            this.classList.remove('dragover');
-        });
-        uploadArea.addEventListener('drop', function (e) {
-            e.preventDefault();
-            this.classList.remove('dragover');
-            const file = e.dataTransfer.files[0];
-            if (file) {
-                proofInput.files = e.dataTransfer.files;
-                showFilePreview(file);
-            }
-        });
-    }
+    uploadArea.addEventListener('dragover', function (e) {
+        e.preventDefault();
+        this.classList.add('dragover');
+    });
+    uploadArea.addEventListener('dragleave', function (e) {
+        e.preventDefault();
+        this.classList.remove('dragover');
+    });
+    uploadArea.addEventListener('drop', function (e) {
+        e.preventDefault();
+        this.classList.remove('dragover');
+        const file = e.dataTransfer.files[0];
+        if (file) {
+            proofInput.files = e.dataTransfer.files;
+            showFilePreview(file);
+        }
+    });
 
     // Form submission
     const form = document.getElementById('attendanceForm');
     const successMsg = document.getElementById('successMessage');
-    if (form) {
-        form.addEventListener('submit', async function (e) {
-            e.preventDefault();
-            if (!validatePage(2)) return;
+    form.addEventListener('submit', async function (e) {
+        e.preventDefault();
+        if (!validatePage(2)) return;
 
-            // Gather form data
-            const data = {
-                name: document.getElementById('name').value,
-                email: document.getElementById('email').value,
-                department: document.getElementById('department').value,
-                yearLevel: document.getElementById('yearLevel').value,
-                section: document.getElementById('section').value,
-                strand: document.getElementById('strand').value || "",
-                program: document.getElementById('program').value || "",
-                timestamp: new Date().toISOString(),
-            };
+        // Gather form data
+        const data = {
+            name: document.getElementById('name').value,
+            email: document.getElementById('email').value,
+            department: document.getElementById('department').value,
+            yearLevel: document.getElementById('yearLevel').value,
+            section: document.getElementById('section').value,
+            strand: document.getElementById('strand').value || "",
+            program: document.getElementById('program').value || "",
+            timestamp: new Date().toISOString(),
+        };
 
-            try {
-                // Use the already-initialized app from the window object, if available
-                const db = getDatabase(window.firebaseApp || undefined);
-                const registrationsRef = ref(db, 'registrations');
-                await push(registrationsRef, data);
-            } catch (err) {
-                alert("There was an error submitting your attendance. Please try again.");
-                return;
-            }
+        try {
+            const db = getDatabase();
+            const registrationsRef = ref(db, 'registrations');
+            await push(registrationsRef, data);
+        } catch (err) {
+            alert("There was an error submitting your attendance. Please try again.");
+            return;
+        }
 
-            form.classList.add('hidden');
-            if (successMsg) successMsg.classList.remove('hidden');
-        });
-    }
+        form.classList.add('hidden');
+        successMsg.classList.remove('hidden');
+    });
 });
