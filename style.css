@@ -178,7 +178,7 @@ body {
   to   { opacity: 1; transform: translateY(0); }
 }
 
-/* ===== Input Groups & Fields ===== */
+/* ===== Input Groups & Fields (ICON FIX APPLIED) ===== */
 .input-group {
   margin-bottom: 1.1rem;
 }
@@ -198,13 +198,15 @@ body {
   margin-left: 0.1em;
 }
 
-/* NEW: Wrap input and icons together for proper containment */
+/* Wrap input and icons together */
 .input-wrapper {
   position: relative;
   width: 100%;
   display: flex;
   align-items: center;
 }
+
+/* Place inputs/selects always INSIDE .input-wrapper! */
 
 .input-field {
   width: 100%;
@@ -232,9 +234,9 @@ body {
   padding-right: 2.5rem;
 }
 
-/* Icons must be inside .input-wrapper for proper positioning */
-.input-icon,
-.select-arrow {
+/* Fix: Place icons absolutely inside .input-wrapper, not .input-group */
+.input-wrapper .input-icon,
+.input-wrapper .select-arrow {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
@@ -242,23 +244,23 @@ body {
   width: 1.25rem;
   height: 1.25rem;
   display: block;
+  line-height: 1;
 }
 
-.input-icon {
-  right: 2.2rem; /* space for select-arrow */
+/* If both icons, input-icon left of select-arrow. If only input-icon, right: 0.75rem */
+.input-wrapper .input-icon {
+  right: 2.1rem;
   color: #bdbdbd;
   z-index: 2;
 }
-
-/* If there's only an input-icon and no select-arrow, align right */
-.input-wrapper:not(:has(.select-arrow)) .input-icon {
-  right: 0.75rem;
-}
-
-.select-arrow {
+.input-wrapper .select-arrow {
   right: 0.75rem;
   color: #c81d25;
   z-index: 3;
+}
+/* Only input-icon, no select-arrow */
+.input-wrapper:not(:has(.select-arrow)) .input-icon {
+  right: 0.75rem;
 }
 
 /* Container for select and its icons */
@@ -275,8 +277,8 @@ body {
   .input-wrapper {
     font-size: 0.97em;
   }
-  .input-icon,
-  .select-arrow {
+  .input-wrapper .input-icon,
+  .input-wrapper .select-arrow {
     width: 1.1rem;
     height: 1.1rem;
   }
@@ -295,6 +297,7 @@ body {
   padding: 1px;
   width: 1em;
   height: 1em;
+  display: inline-block;
 }
 .tooltip-text {
   visibility: hidden;
@@ -687,6 +690,11 @@ body {
   }
   .input-label { font-size: 0.97em; }
   .input-field { font-size: 0.97em; }
+  .input-wrapper .input-icon,
+  .input-wrapper .select-arrow {
+    width: 1.1rem;
+    height: 1.1rem;
+  }
 }
 
 /* ===== Utility Classes ===== */
