@@ -8,9 +8,10 @@
     <link rel="stylesheet" href="style.css">
     <!-- Firebase JS SDKs -->
     <script type="module">
-      import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
-      import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-analytics.js";
-      import { getDatabase } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-database.js";
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-analytics.js";
+  import { getDatabase } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-database.js";
+  import { getStorage, ref as sRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-storage.js";
       // Your web app's Firebase configuration
       const firebaseConfig = {
         apiKey: "AIzaSyAlZLthDWmMioKQkznMKSOVQ7ggq8HYFfw",
@@ -24,9 +25,13 @@
       };
       // Initialize Firebase
       const app = initializeApp(firebaseConfig);
-      const analytics = getAnalytics(app);
-      window.firebaseApp = app; // Make available globally if needed
-      window.getDatabase = getDatabase;
+  const analytics = getAnalytics(app);
+  window.firebaseApp = app;
+  window.getDatabase = getDatabase;
+  window.getStorage = getStorage;
+  window.sRef = sRef;
+  window.uploadBytes = uploadBytes;
+  window.getDownloadURL = getDownloadURL;
     </script>
 </head>
 <body>
