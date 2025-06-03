@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin - College Red Cross Youth Attendance</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+  <!-- Firebase -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
+    import { getDatabase } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-database.js";
+    window.firebaseConfig = {
+      apiKey: "AIzaSyAlZLthDWmMioKQkznMKSOVQ7ggq8HYFfw",
+      authDomain: "school-projects-c1354.firebaseapp.com",
+      databaseURL: "https://school-projects-c1354-default-rtdb.firebaseio.com",
+      projectId: "school-projects-c1354",
+      storageBucket: "school-projects-c1354.appspot.com",
+      messagingSenderId: "965342267950",
+      appId: "1:965342267950:web:62527018cd97e4c5266dbf",
+      measurementId: "G-7DQ3Q87FD0"
+    };
+    window.firebaseApp = initializeApp(window.firebaseConfig);
+    window.getDatabase = getDatabase;
+  </script>
+  <style>
+    /* Minimal admin page overrides */
+    .admin-container { max-width: 62rem; margin: 2rem auto; background: #fff; border-radius: 1.2rem; box-shadow: 0 4px 24px #0001; padding: 2.5rem; }
+    .admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
+    .admin-title { font-size: 2.1rem; color: #c81d25; font-weight: bold; letter-spacing: -1px; }
+    .admin-event-select { font-size: 1.1rem; border-radius: .4em; border: 1.5px solid #c81d25; padding: .4em 1em; margin-left: 1em; }
+    .admin-table { width: 100%; border-collapse: collapse; margin-top: 1.5rem; }
+    .admin-table th, .admin-table td { padding: .67em .9em; border-bottom: 1px solid #eee; }
+    .admin-table th { background: #fafafa; color: #c81d25; font-weight: 700; }
+    .admin-table td { font-size: 0.99rem; }
+    .admin-actions button { margin-right: 0.6em; }
+    .admin-filter { margin: 1em 0; }
+    .admin-btn { background: #c81d25; color: #fff; border: none; padding: 0.45em 1.1em; border-radius: 0.33em; font-weight: 600; cursor: pointer; margin-right: .5em; }
+    .admin-btn.secondary { background: #f4f4f4; color: #c81d25; border: 1.5px solid #c81d25; }
+    .admin-btn.danger { background: #e53935; }
+    .admin-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+    .admin-table input, .admin-table select { font-size: 0.98em; padding: 0.2em 0.5em; }
+    .admin-export { margin-left: auto; }
+    @media (max-width: 900px) {
+      .admin-container { padding: 1rem; }
+      .admin-header { flex-direction: column; align-items: flex-start; }
+      .admin-title { font-size: 1.2rem; }
+      .admin-export { margin: 1em 0 0 0; }
+      .admin-filter { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <div class="admin-container">
+    <div class="admin-header">
+      <div>
+        <span class="admin-title">Attendance Admin Panel</span>
+        <select id="eventSelect" class="admin-event-select"></select>
+        <button class="admin-btn" id="addEventBtn">+ Add Event</button>
+      </div>
+      <button class="admin-btn admin-export" id="exportBtn">Export CSV</button>
+    </div>
+    <div class="admin-filter">
+      <label>
+        Filter by Name: <input type="text" id="filterName" placeholder="Type a name...">
+      </label>
+      <label style="margin-left:1em;">
+        Department:
+        <select id="filterDept">
+          <option value="">All</option>
+          <option value="SHS">SHS</option>
+          <option value="College">College</option>
+        </select>
+      </label>
+    </div>
+    <div id="adminTableContainer">
+      <table class="admin-table" id="attendanceTable">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Dept</th>
+            <th>Year</th>
+            <th>Section</th>
+            <th>Strand</th>
+            <th>Program</th>
+            <th>Proof</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="attendanceTableBody"></tbody>
+      </table>
+      <div id="noDataMsg" style="display:none; text-align:center; color:#888; margin-top:2em;">No attendance data.</div>
+    </div>
+    <!-- Modal for Add/Edit Entry -->
+    <div id="modalBG" style="display:none; position:fixed; left:0; top:0; width:100vw; height:100vh; background:#0005; z-index:100;">
+      <div id="modalBox" style="background:#fff; max-width:430px; margin:7vh auto 0 auto; border-radius:1em; box-shadow:0 4px 24px #0002; padding:2em 1.3em; position:relative;">
+        <h3 id="modalTitle" style="color:#c81d25; margin-bottom:1.1em;"></h3>
+        <form id="entryForm">
+          <input type="hidden" id="entryId">
+          <label>Full Name<span style="color:#c81d25;">*</span><input id="entryName" required></label><br>
+          <label>Email<span style="color:#c81d25;">*</span><input id="entryEmail" type="email" required></label><br>
+          <label>Department<span style="color:#c81d25;">*</span>
+            <select id="entryDept" required>
+              <option value="SHS">SHS</option>
+              <option value="College">College</option>
+            </select>
+          </label><br>
+          <label>Year Level<span style="color:#c81d25;">*</span><input id="entryYear" required></label><br>
+          <label>Section<span style="color:#c81d25;">*</span><input id="entrySection" required></label><br>
+          <label>Strand<input id="entryStrand"></label><br>
+          <label>Program<input id="entryProgram"></label><br>
+          <label>Proof URL<input id="entryProof"></label><br>
+          <div style="margin-top:1.2em; text-align:right;">
+            <button type="button" class="admin-btn secondary" id="modalCancel">Cancel</button>
+            <button type="submit" class="admin-btn" id="modalSave">Save</button>
+          </div>
+        </form>
+      </div>
+    </div>
+    <!-- Modal for Add Event -->
+    <div id="eventModalBG" style="display:none; position:fixed; left:0; top:0; width:100vw; height:100vh; background:#0005; z-index:100;">
+      <div style="background:#fff; max-width:350px; margin:12vh auto 0 auto; border-radius:1em; box-shadow:0 4px 24px #0002; padding:2em 1.3em; position:relative;">
+        <h3 style="color:#c81d25; margin-bottom:1em;">Add New Event</h3>
+        <form id="eventForm">
+          <label>Event Name<span style="color:#c81d25;">*</span>
+            <input id="eventName" required style="width:100%;">
+          </label>
+          <div style="margin-top:1.3em; text-align:right;">
+            <button type="button" class="admin-btn secondary" id="eventCancel">Cancel</button>
+            <button type="submit" class="admin-btn">Add Event</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <script type="module" src="admin.js"></script>
+</body>
+</html>
