@@ -181,8 +181,8 @@ body {
 /* ===== Input Groups & Fields ===== */
 .input-group {
   margin-bottom: 1.1rem;
-  position: relative;
 }
+
 .input-label {
   display: flex;
   align-items: center;
@@ -191,62 +191,96 @@ body {
   color: #222;
   gap: 0.3rem;
 }
+
 .required-indicator {
   color: #c81d25;
   font-size: 1.1em;
   margin-left: 0.1em;
 }
+
+/* NEW: Wrap input and icons together for proper containment */
+.input-wrapper {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+
 .input-field {
   width: 100%;
-  padding: 0.65rem 2.2rem 0.65rem 0.85rem;
+  padding: 0.65rem 2.2rem 0.65rem 0.85rem; /* space for icon(s) */
   border: 1.5px solid #e9e9e9;
   border-radius: 0.5rem;
   font-size: 1rem;
   transition: border 0.2s;
   background: #fafbfc;
   outline: none;
+  box-sizing: border-box;
 }
+
 .input-field:focus {
   border: 1.5px solid #c81d25;
   background: #fff;
 }
+
 .input-field.invalid {
   border: 1.5px solid #e53935;
   background: #fff0f1;
 }
+
 .input-with-icon {
   padding-right: 2.5rem;
 }
-.input-icon {
+
+/* Icons must be inside .input-wrapper for proper positioning */
+.input-icon,
+.select-arrow {
   position: absolute;
-  right: 0.75rem;
-  top: 52%;
+  top: 50%;
   transform: translateY(-50%);
-  color: #bdbdbd;
   pointer-events: none;
   width: 1.25rem;
   height: 1.25rem;
   display: block;
-  z-index: 5;
-}
-.input-group .input-icon {
-  right: 2.2rem;
-}
-.select-wrapper {
-  position: relative;
-}
-.select-arrow {
-  position: absolute;
-  right: 0.75rem;
-  top: 52%;
-  transform: translateY(-50%);
-  pointer-events: none;
-  color: #c81d25;
-  width: 1.25rem;
-  height: 1.25rem;
-  z-index: 6;
 }
 
+.input-icon {
+  right: 2.2rem; /* space for select-arrow */
+  color: #bdbdbd;
+  z-index: 2;
+}
+
+/* If there's only an input-icon and no select-arrow, align right */
+.input-wrapper:not(:has(.select-arrow)) .input-icon {
+  right: 0.75rem;
+}
+
+.select-arrow {
+  right: 0.75rem;
+  color: #c81d25;
+  z-index: 3;
+}
+
+/* Container for select and its icons */
+.select-wrapper {
+  width: 100%;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+/* Responsive fix: stack icons correctly on small screens */
+@media (max-width: 640px) {
+  .input-field,
+  .input-wrapper {
+    font-size: 0.97em;
+  }
+  .input-icon,
+  .select-arrow {
+    width: 1.1rem;
+    height: 1.1rem;
+  }
+}
 /* ===== Tooltip ===== */
 .tooltip {
   display: inline-block;
