@@ -1,5 +1,18 @@
 import { getDatabase, ref, push } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-database.js";
 
+
+console.log("Script loaded!");
+
+const btn = document.getElementById('toPage2Next');
+console.log("Button:", btn);
+
+if (btn) {
+  btn.addEventListener('click', () => {
+    console.log("Button clicked!");
+  });
+}
+
+
 document.addEventListener('DOMContentLoaded', function () {
     // Multi-step navigation
     const pages = Array.from(document.querySelectorAll('.form-page'));
