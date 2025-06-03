@@ -1,4 +1,9 @@
 import { getDatabase, ref, push } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-database.js";
+import { firebaseConfig } from "./firebaseConfig.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
+
+// Initialize Firebase app (only if not already initialized elsewhere)
+const app = initializeApp(firebaseConfig);
 
 document.addEventListener('DOMContentLoaded', function () {
     // Multi-step navigation
@@ -185,7 +190,7 @@ document.addEventListener('DOMContentLoaded', function () {
         };
 
         try {
-            const db = getDatabase();
+            const db = getDatabase(app);
             const registrationsRef = ref(db, 'registrations');
             await push(registrationsRef, data);
         } catch (err) {
