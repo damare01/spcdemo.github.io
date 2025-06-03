@@ -248,20 +248,12 @@ body {
   z-index: 2;
 }
 
-/* Dropdown arrow always on right, red only */
+/* Remove dropdown arrow entirely */
 .input-wrapper .select-arrow {
-  position: absolute;
-  right: 0.75rem;
-  top: 50%;
-  transform: translateY(-50%);
-  color: #c81d25;
-  width: 1.25rem;
-  height: 1.25rem;
-  display: block;
-  z-index: 3;
+  display: none !important;
 }
 
-/* Hide any additional dropdown icon (black/gray one), only show .select-arrow (red) */
+/* Hide any additional dropdown icon (black/gray one), only show .input-icon if present */
 .input-wrapper .input-icon.select-dropdown {
   display: none !important;
 }
@@ -286,7 +278,6 @@ body {
     height: 1.1rem;
   }
 }
-
 /* ===== Tooltip ===== */
 .tooltip {
   display: inline-block;
