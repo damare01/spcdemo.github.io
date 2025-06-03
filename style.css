@@ -1,4 +1,6 @@
-/* Reset and base styles */
+/* -----------------
+   Base & Reset
+------------------- */
 *,
 *::before,
 *::after {
@@ -6,34 +8,56 @@
   margin: 0;
   padding: 0;
 }
-
 body {
   font-family: 'Segoe UI', 'Helvetica Neue', Arial, 'Liberation Sans', sans-serif;
   background: #f3f4f6;
   color: #222;
   min-height: 100vh;
+  line-height: 1.6;
 }
 
-/* Layout */
+/* -----------------
+   Layout Containers
+------------------- */
 .page-container {
   padding-top: 2.5rem;
   padding-bottom: 2.5rem;
 }
-
-.form-card {
-  background: #fff;
-  border-radius: 1.25rem;
-  box-shadow: 0 4px 24px 0 rgba(0,0,0,0.08);
-  overflow: hidden;
+.max-w-4xl {
+  max-width: 56rem;
+}
+.mx-auto {
+  margin-left: auto;
+  margin-right: auto;
+}
+.mt-8 {
+  margin-top: 2rem;
+}
+.py-10 {
+  padding-top: 2.5rem;
+  padding-bottom: 2.5rem;
 }
 
-/* Header Section */
-.header-section {
-  background: linear-gradient(90deg, #c81d25 0%, #f44336 100%);
-  padding: 2rem 1rem 2.5rem 1rem;
+/* -----------------
+   Card & Shadows
+------------------- */
+.form-card {
+  background: #fff;
+  border-radius: 1.5rem;
+  box-shadow: 0 4px 24px 0 rgba(0,0,0,0.10);
+  overflow: hidden;
   position: relative;
 }
 
+/* -----------------
+   Header Section
+------------------- */
+.header-section {
+  background: linear-gradient(90deg, #c81d25 0%, #f44336 100%);
+  padding: 2.2rem 1rem 2.5rem 1rem;
+  position: relative;
+  text-align: center;
+}
 .header-pattern {
   position: absolute;
   top: 0; left: 0; right: 0; bottom: 0;
@@ -42,17 +66,17 @@ body {
   pointer-events: none;
   z-index: 0;
 }
-
 .red-cross-logo {
-  width: 64px;
-  height: 64px;
+  width: 74px;
+  height: 74px;
   background: url('https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/Red_Cross.svg/1200px-Red_Cross.svg.png') center/cover no-repeat;
   border-radius: 50%;
-  margin: 0 auto 0.5rem auto;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+  margin: 0 auto 0.7rem auto;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
   border: 4px solid #fff3;
+  z-index: 1;
+  position: relative;
 }
-
 .floating-shapes {
   position: absolute;
   top: 0; left: 0; width: 100%; height: 100%;
@@ -67,20 +91,48 @@ body {
 .shape-1 {
   width: 120px; height: 120px;
   background: #fff;
-  top: 15px; left: -40px;
+  top: 24px; left: -52px;
 }
 .shape-2 {
   width: 90px; height: 90px;
   background: #e53935;
-  top: -30px; right: -30px;
+  top: -22px; right: -33px;
 }
 .shape-3 {
-  width: 60px; height: 60px;
+  width: 62px; height: 62px;
   background: #fff;
-  bottom: -20px; right: 40px;
+  bottom: -20px; right: 50px;
 }
 
-/* Form Steps & Progress */
+/* -----------------
+   Typography Utilities
+------------------- */
+.text-center { text-align: center; }
+.text-white { color: #fff; }
+.text-4xl { font-size: 2.5rem; }
+.font-bold { font-weight: bold; }
+.tracking-tight { letter-spacing: -0.03em; }
+.mb-2 { margin-bottom: .5rem; }
+.text-xl { font-size: 1.35rem; }
+.opacity-90 { opacity: 0.9; }
+.font-light { font-weight: 300; }
+.text-2xl { font-size: 1.55rem; }
+.font-semibold { font-weight: 600; }
+.mb-6 { margin-bottom: 1.5rem; }
+.text-gray-800 { color: #27272a; }
+.text-lg { font-size: 1.11rem; }
+.font-medium { font-weight: 500; }
+.mb-4 { margin-bottom: 1rem; }
+.text-gray-700 { color: #374151; }
+.mb-8 { margin-bottom: 2rem; }
+.text-gray-600 { color: #666; }
+.text-gray-500 { color: #888; }
+.text-sm { font-size: 0.96em; }
+.mt-1 { margin-top: 0.25rem; }
+
+/* -----------------
+   Form Steps & Progress
+------------------- */
 .form-steps {
   display: flex;
   justify-content: center;
@@ -107,13 +159,13 @@ body {
   align-items: center;
   justify-content: center;
   font-weight: 600;
-  font-size: 1.2rem;
+  font-size: 1.15rem;
   margin-bottom: 0.2rem;
   border: 2px solid #fff;
   box-shadow: 0 1px 4px 0 #0001;
 }
 .step-text {
-  font-size: 0.95rem;
+  font-size: 0.98rem;
   font-weight: 500;
 }
 .form-progress {
@@ -129,7 +181,9 @@ body {
   transition: width 0.3s;
 }
 
-/* Form Pages */
+/* -----------------
+   Form Pages
+------------------- */
 .form-section {
   padding: 2rem 2.5rem 2.5rem 2.5rem;
 }
@@ -145,16 +199,18 @@ body {
   to   { opacity: 1; transform: translateY(0); }
 }
 
-/* Input Groups */
+/* -----------------
+   Input Groups & Fields
+------------------- */
 .input-group {
-  margin-bottom: 1.15rem;
+  margin-bottom: 1.1rem;
   position: relative;
 }
 .input-label {
   display: flex;
   align-items: center;
   font-weight: 500;
-  margin-bottom: 0.35rem;
+  margin-bottom: 0.33rem;
   color: #222;
   gap: 0.3rem;
 }
@@ -204,7 +260,9 @@ body {
   color: #c81d25;
 }
 
-/* Tooltip */
+/* -----------------
+   Tooltip
+------------------- */
 .tooltip {
   display: inline-block;
   position: relative;
@@ -240,7 +298,9 @@ body {
   opacity: 1;
 }
 
-/* Form Navigation */
+/* -----------------
+   Form Navigation Buttons
+------------------- */
 .form-navigation {
   display: flex;
   justify-content: space-between;
@@ -281,7 +341,9 @@ body {
   padding-right: 2.2rem;
 }
 
-/* Verification Badge */
+/* -----------------
+   Verification Badge & Summary
+------------------- */
 .verification-badge {
   display: flex;
   align-items: center;
@@ -294,8 +356,6 @@ body {
   margin-bottom: 1.2em;
   font-size: 1.1em;
 }
-
-/* Verification Summary */
 .verification-summary {
   background: #f9fafb;
   border-radius: 0.75rem;
@@ -307,7 +367,7 @@ body {
   display: flex;
   align-items: center;
   gap: 1.2rem;
-  margin-bottom: 0.65rem;
+  margin-bottom: 0.7rem;
   font-size: 1.07rem;
 }
 .summary-label {
@@ -321,7 +381,9 @@ body {
   color: #2e2e2e;
 }
 
-/* Proof of Attendance Upload */
+/* -----------------
+   File Upload
+------------------- */
 .upload-area {
   border: 2px dashed #c81d25;
   border-radius: 0.6rem;
@@ -369,8 +431,13 @@ body {
 .upload-btn input[type="file"] {
   display: none;
 }
+.upload-progress {
+  margin-top: 1rem;
+}
 
-/* File Preview */
+/* -----------------
+   File Preview
+------------------- */
 .file-preview {
   display: flex;
   align-items: center;
@@ -413,7 +480,9 @@ body {
   color: #fff;
 }
 
-/* Divider */
+/* -----------------
+   Divider
+------------------- */
 .form-divider {
   height: 1.5px;
   background: #f3f3f3;
@@ -421,7 +490,9 @@ body {
   border-radius: 2px;
 }
 
-/* Terms & Conditions */
+/* -----------------
+   Terms & Conditions
+------------------- */
 .terms-container {
   background: #f9f9f9;
   border-radius: 0.7rem;
@@ -444,8 +515,19 @@ body {
   align-items: center;
   justify-content: center;
 }
+.list-disc {
+  list-style-type: disc;
+}
+.pl-5 {
+  padding-left: 1.25rem;
+}
+.space-y-2 > :not([hidden]) ~ :not([hidden]) {
+  margin-top: 0.5rem;
+}
 
-/* Custom Checkbox */
+/* -----------------
+   Custom Checkbox
+------------------- */
 .checkbox-wrapper {
   display: flex;
   align-items: flex-start;
@@ -496,7 +578,9 @@ body {
   transform: rotate(45deg);
 }
 
-/* Success Message */
+/* -----------------
+   Success Message
+------------------- */
 .success-message {
   background: #e8f5e9;
   border: 1.7px solid #43a047;
@@ -518,7 +602,9 @@ body {
   justify-content: center;
 }
 
-/* Confetti Animation */
+/* -----------------
+   Confetti Animation
+------------------- */
 .confetti-container {
   position: fixed;
   left: 0; top: 0;
@@ -550,44 +636,9 @@ body {
   }
 }
 
-/* Footer */
-.text-center {
-  text-align: center;
-}
-.text-gray-500 {
-  color: #888;
-}
-.text-sm {
-  font-size: 0.96em;
-}
-
-/* Utility Classes */
-.max-w-4xl { max-width: 54rem; }
-.mx-auto { margin-left: auto; margin-right: auto; }
-.mt-8 { margin-top: 2rem; }
-.py-10 { padding-top: 2.5rem; padding-bottom: 2.5rem; }
-.text-4xl { font-size: 2.5rem; }
-.font-bold { font-weight: bold; }
-.tracking-tight { letter-spacing: -.03em; }
-.mb-2 { margin-bottom: 0.5rem; }
-.text-xl { font-size: 1.35rem; }
-.opacity-90 { opacity: 0.9; }
-.font-light { font-weight: 300; }
-.text-2xl { font-size: 1.6rem; }
-.font-semibold { font-weight: 600; }
-.mb-6 { margin-bottom: 1.5rem; }
-.text-gray-800 { color: #1a202c; }
-.text-lg { font-size: 1.13rem; }
-.font-medium { font-weight: 500; }
-.mb-4 { margin-bottom: 1rem; }
-.text-gray-700 { color: #374151; }
-.mb-8 { margin-bottom: 2rem; }
-.space-y-2 > :not([hidden]) ~ :not([hidden]) {
-  margin-top: 0.5rem;
-}
-.pl-5 { padding-left: 1.25rem; }
-.text-gray-600 { color: #666; }
-.text-gray-500 { color: #888; }
+/* -----------------
+   Responsive Design
+------------------- */
 @media (max-width: 640px) {
   .form-section {
     padding: 1rem 0.4rem 1.5rem 0.4rem;
@@ -600,9 +651,13 @@ body {
   }
   .header-section {
     border-radius: 0.5em 0.5em 0 0;
-    padding: 1.1rem 0.1rem 1.7rem 0.1rem;
+    padding: 1rem 0.1rem 1.7rem 0.1rem;
   }
 }
+
+/* -----------------
+   Utility Classes
+------------------- */
 .hidden {
   display: none !important;
 }
