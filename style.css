@@ -612,61 +612,80 @@ body {
 
 /* ===== Success Message ===== */
 .success-message {
-  background: #e8f5e9;
-  border: 1.7px solid #43a047;
-  border-radius: 0.8rem;
-  padding: 2.1rem 2.7rem;
+  background: linear-gradient(90deg, #e8f5e9 60%, #f2fbe8 100%);
+  border: 2px solid #43a047;
+  border-radius: 1rem;
+  padding: 2.5rem 2.5rem;
   display: flex;
   align-items: center;
-  gap: 1.3rem;
-  animation: fadeIn 0.5s;
+  gap: 1.7rem;
+  margin-top: 2.5rem;
+  box-shadow: 0 4px 24px 0 #43a04722, 0 1.5px 6px 0 #0001;
+  animation: fadeIn 0.55s;
 }
+
 .success-icon {
-  color: #43a047;
-  background: #fff;
+  color: #fff;
+  background: linear-gradient(135deg, #43a047 70%, #388e3c 100%);
   border-radius: 50%;
-  padding: 0.65rem;
-  box-shadow: 0 2px 6px 0 #43a04744;
+  padding: 1.1rem;
+  box-shadow: 0 2px 8px 0 #43a04740;
   display: flex;
   align-items: center;
   justify-content: center;
-}
-.success-icon svg {
-  width: 2.5em;
-  height: 2.5em;
+  border: 3px solid #fff;
 }
 
-/* ===== Confetti Animation ===== */
-.confetti-container {
-  position: fixed;
-  left: 0; top: 0;
-  width: 100vw; height: 100vh;
-  pointer-events: none;
-  z-index: 100;
-  overflow: hidden;
-  display: none;
-}
-.confetti-container.show {
+.success-icon svg {
+  width: 2.8em;
+  height: 2.8em;
   display: block;
+  filter: drop-shadow(0 1px 2px #43a04722);
 }
-.confetti {
-  position: absolute;
-  font-size: 2rem;
-  animation: confetti-fall 2.8s cubic-bezier(.47,.1,.5,1) forwards;
-  user-select: none;
+
+.success-message-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
-@keyframes confetti-fall {
-  0% {
-    opacity: 1;
-    top: -4vh;
-    transform: rotateZ(0deg) scale(1.1);
+
+.success-message-content h3 {
+  font-size: 2.1rem;
+  font-weight: 700;
+  color: #388e3c;
+  margin: 0 0 0.3rem 0;
+  letter-spacing: -0.01em;
+}
+
+.success-message-content p {
+  font-size: 1.22rem;
+  color: #333;
+  margin: 0.7rem 0 0 0;
+  opacity: 0.93;
+}
+
+@media (max-width: 700px) {
+  .success-message {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 1.4rem 1rem;
+    gap: 1rem;
   }
-  100% {
-    opacity: 0;
-    top: 100vh;
-    transform: rotateZ(360deg) scale(0.7);
+  .success-icon {
+    padding: 0.7rem;
+  }
+  .success-icon svg {
+    width: 2.1em;
+    height: 2.1em;
+  }
+  .success-message-content h3 {
+    font-size: 1.35rem;
+  }
+  .success-message-content p {
+    font-size: 1rem;
   }
 }
+
 
 /* ===== Responsive Design ===== */
 @media (max-width: 640px) {
